@@ -282,6 +282,7 @@ export default function App() {
             onNavigate={handleNavigate}
             onUpdateQuantity={handleUpdateCartQuantity}
             onRemoveItem={handleRemoveFromCart}
+            onClearCart={() => setCartItems([])}
             promoCodes={promoCodes}
           />
         );

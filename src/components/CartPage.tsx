@@ -12,6 +12,7 @@ interface CartPageProps {
   onNavigate: (page: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveItem: (id: string) => void;
+  onClearCart: () => void;
   promoCodes: PromoCode[];
 }
 
@@ -25,7 +26,7 @@ const demoCartItem: CartItem = {
   size: '18'
 };
 
-export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem, promoCodes }: CartPageProps) {
+export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem, onClearCart, promoCodes }: CartPageProps) {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoDiscount, setPromoDiscount] = useState(0);
@@ -85,7 +86,16 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
             <ArrowLeft className="w-4 h-4 mr-2" />
             Продолжить покупки
           </Button>
-          <h1 className="text-silver-bright">Корзина</h1>
+          <h1 className="text-silver-bright flex-1">Корзина</h1>
+          {displayItems.length > 0 && cartItems.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={onClearCart}
+              className="border-destructive text-destructive hover:bg-destructive hover:text-white"
+            >
+              Очистить корзину
+            </Button>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">

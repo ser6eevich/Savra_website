@@ -14,7 +14,8 @@ import {
   DollarSign,
   Tag,
   Upload,
-  Play
+  Play,
+  Download
 } from 'lucide-react'
 import type { Product, PromoCode, AdminStats } from '../types'
 
@@ -174,6 +175,42 @@ export function AdminPage({
     }))
   }
   
+  const handleDownloadCatalog = () => {
+    // Создаем данные для экспорта
+    const catalogData = products.map(product => ({
+      'ID': product.id,
+      'Название': product.name,
+      'Описание': product.description,
+      'Цена': product.price,
+      'Категория': product.category,
+      'Коллекция': product.collection || '',
+      'Артикул': product.article || '',
+      'Материал': product.material || '',
+      'Тип': product.type || '',
+      'Размеры': product.sizes?.join(', ') || ''
+    }))
+
+    // Создаем CSV контент
+    const headers = Object.keys(catalogData[0] || {})
+    const csvContent = [
+      headers.join(','),
+      ...catalogData.map(row => 
+        headers.map(header => `"${row[header as keyof typeof row] || ''}"`).join(',')
+      )
+    ].join('\n')
+
+    // Создаем и скачиваем файл
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `savra-catalog-${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -280,13 +317,23 @@ export function AdminPage({
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-silver-bright">Управление товарами</h2>
-                <Button
-                  onClick={() => setIsProductModalOpen(true)}
-                  className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Добавить товар
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleDownloadCatalog}
+                    variant="outline"
+                    className="border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Скачать каталог
+                  </Button>
+                  <Button
+                    onClick={() => setIsProductModalOpen(true)}
+                    className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Добавить товар
+                  </Button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
