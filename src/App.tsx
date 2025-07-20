@@ -155,7 +155,15 @@ export default function App() {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    setCurrentUser(mockUser);
+    
+    // Плавный переход после авторизации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(mockUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
   };
 
   const handleRegister = (userData: any) => {
@@ -170,7 +178,15 @@ export default function App() {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    setCurrentUser(newUser);
+    
+    // Плавный переход после регистрации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(newUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
   };
 
   const handleLogout = () => {

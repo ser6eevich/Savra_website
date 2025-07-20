@@ -29,6 +29,7 @@ export function PromoCodeModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Создать промокод"
+      className="max-w-md"
     >
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">

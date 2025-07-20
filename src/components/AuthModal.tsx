@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
+import { Checkbox } from './ui/checkbox'
 import { Modal } from './ui/modal'
 import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react'
 
@@ -15,6 +16,7 @@ interface AuthModalProps {
 export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalProps) {
   const [isLoginMode, setIsLoginMode] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -25,12 +27,22 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!isLoginMode && !agreedToTerms) {
+      alert('Необходимо согласиться с обработкой персональных данных')
+      return
+    }
+    
     if (isLoginMode) {
       onLogin(formData.email, formData.password)
     } else {
       onRegister(formData)
     }
-    onClose()
+    
+    // Плавное закрытие модального окна
+    setTimeout(() => {
+      onClose()
+    }, 300)
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -136,9 +148,31 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
           </div>
         </div>
 
+        {!isLoginMode && (
+          <div className="flex items-start space-x-3">
+            <Checkbox
+              id="terms"
+              checked={agreedToTerms}
+              onCheckedChange={setAgreedToTerms}
+              className="mt-1 border-slate-dark data-[state=checked]:bg-silver-accent data-[state=checked]:border-silver-accent"
+            />
+            <Label htmlFor="terms" className="text-silver-dim text-sm leading-relaxed cursor-pointer">
+              Я согласен(на) с{' '}
+              <button type="button" className="text-silver-accent hover:text-chrome underline">
+                обработкой персональных данных
+              </button>
+              {' '}и{' '}
+              <button type="button" className="text-silver-accent hover:text-chrome underline">
+                политикой конфиденциальности
+              </button>
+            </Label>
+          </div>
+        )}
+
         <Button
           type="submit"
-          className="w-full bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-3 transition-all duration-300"
+          disabled={!isLoginMode && !agreedToTerms}
+          className="w-full bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoginMode ? 'Войти' : 'Создать аккаунт'}
         </Button>

@@ -220,54 +220,65 @@ export function AdminPage({
         </div>
 
         {/* Stats Tab */}
-        {activeTab === 'stats' && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-silver-dim text-sm">Всего заказов</p>
-                    <p className="text-2xl text-silver-bright">{stats.totalOrders}</p>
+        <div className={`transition-all duration-300 ${
+          activeTab === 'stats' 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-4 pointer-events-none absolute'
+        }`}>
+          {activeTab === 'stats' && (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-silver-dim text-sm">Всего заказов</p>
+                      <p className="text-2xl text-silver-bright">{stats.totalOrders}</p>
+                    </div>
+                    <Package className="w-8 h-8 text-silver-accent" />
                   </div>
-                  <Package className="w-8 h-8 text-silver-accent" />
                 </div>
-              </div>
-              <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-silver-dim text-sm">Выручка</p>
-                    <p className="text-2xl text-silver-bright">₽{stats.totalRevenue.toLocaleString()}</p>
+                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-silver-dim text-sm">Выручка</p>
+                      <p className="text-2xl text-silver-bright">₽{stats.totalRevenue.toLocaleString()}</p>
+                    </div>
+                    <DollarSign className="w-8 h-8 text-silver-accent" />
                   </div>
-                  <DollarSign className="w-8 h-8 text-silver-accent" />
                 </div>
-              </div>
-              <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-silver-dim text-sm">Товаров</p>
-                    <p className="text-2xl text-silver-bright">{stats.totalProducts}</p>
+                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-silver-dim text-sm">Товаров</p>
+                      <p className="text-2xl text-silver-bright">{stats.totalProducts}</p>
+                    </div>
+                    <Package className="w-8 h-8 text-silver-accent" />
                   </div>
-                  <Package className="w-8 h-8 text-silver-accent" />
                 </div>
-              </div>
-              <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-silver-dim text-sm">Пользователей</p>
-                    <p className="text-2xl text-silver-bright">{stats.totalUsers}</p>
+                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-silver-dim text-sm">Пользователей</p>
+                      <p className="text-2xl text-silver-bright">{stats.totalUsers}</p>
+                    </div>
+                    <Users className="w-8 h-8 text-silver-accent" />
                   </div>
-                  <Users className="w-8 h-8 text-silver-accent" />
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Products Tab */}
-        {activeTab === 'products' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-silver-bright">Управление товарами</h2>
+        <div className={`transition-all duration-300 ${
+          activeTab === 'products' 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-4 pointer-events-none absolute'
+        }`}>
+          {activeTab === 'products' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-silver-bright">Управление товарами</h2>
               <Button
                 onClick={() => setIsProductModalOpen(true)}
                 className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
@@ -318,66 +329,73 @@ export function AdminPage({
         )}
 
         {/* Promo Codes Tab */}
-        {activeTab === 'promo' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-silver-bright">Промокоды</h2>
-              <Button
-                onClick={() => setIsPromoModalOpen(true)}
-                className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Создать промокод
-              </Button>
-            </div>
+        <div className={`transition-all duration-300 ${
+          activeTab === 'promo' 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-4 pointer-events-none absolute'
+        }`}>
+          {activeTab === 'promo' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-silver-bright">Промокоды</h2>
+                <Button
+                  onClick={() => setIsPromoModalOpen(true)}
+                  className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Создать промокод
+                </Button>
+              </div>
 
-            <div className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-dark">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-silver-dim">Код</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Скидка</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Статус</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Использований</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Действия</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {promoCodes.map((promo) => (
-                      <tr key={promo.id} className="border-t border-slate-dark">
-                        <td className="px-6 py-4 text-silver-bright">{promo.code}</td>
-                        <td className="px-6 py-4 text-silver-muted">{promo.discount}%</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            promo.isActive 
-                              ? 'bg-silver-accent text-silver-bright' 
-                              : 'bg-slate-dark text-silver-shadow'
-                          }`}>
-                            {promo.isActive ? 'Активен' : 'Неактивен'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-silver-muted">
-                          {promo.usageCount}{promo.maxUsage ? `/${promo.maxUsage}` : ''}
-                        </td>
-                        <td className="px-6 py-4">
-                          <Button
-                            onClick={() => onDeletePromoCode(promo.id)}
-                            variant="outline"
-                            size="sm"
-                            className="border-destructive text-destructive hover:bg-destructive hover:text-white"
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        </td>
+              <div className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-slate-dark">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-silver-dim">Код</th>
+                        <th className="px-6 py-3 text-left text-silver-dim">Скидка</th>
+                        <th className="px-6 py-3 text-left text-silver-dim">Статус</th>
+                        <th className="px-6 py-3 text-left text-silver-dim">Использований</th>
+                        <th className="px-6 py-3 text-left text-silver-dim">Действия</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {promoCodes.map((promo) => (
+                        <tr key={promo.id} className="border-t border-slate-dark">
+                          <td className="px-6 py-4 text-silver-bright">{promo.code}</td>
+                          <td className="px-6 py-4 text-silver-muted">{promo.discount}%</td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-1 rounded text-xs ${
+                              promo.isActive 
+                                ? 'bg-silver-accent text-silver-bright' 
+                                : 'bg-slate-dark text-silver-shadow'
+                            }`}>
+                              {promo.isActive ? 'Активен' : 'Неактивен'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-silver-muted">
+                            {promo.usageCount}{promo.maxUsage ? `/${promo.maxUsage}` : ''}
+                          </td>
+                          <td className="px-6 py-4">
+                            <Button
+                              onClick={() => onDeletePromoCode(promo.id)}
+                              variant="outline"
+                              size="sm"
+                              className="border-destructive text-destructive hover:bg-destructive hover:text-white"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        </div>
 
         {/* Modals */}
         <ProductModal

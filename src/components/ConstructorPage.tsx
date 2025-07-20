@@ -126,63 +126,75 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
               </div>
 
               {/* Step 2: Selected Product */}
-              {selectedProduct && (
-                <div className="constructor-step bg-graphite rounded-lg p-6 border border-slate-dark constructor-step-enter-active">
-                  <h3 className="text-silver-bright mb-4 flex items-center">
-                    <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">2</span>
-                    Выбранная модель
-                  </h3>
-                  <div className="flex gap-4 p-4 bg-slate-dark rounded-lg border border-silver-accent">
-                    <div className="w-20 h-20 overflow-hidden rounded-lg">
-                      <ImageWithFallback
-                        src={selectedProduct.image}
-                        alt={selectedProduct.name}
-                        className="w-full h-full object-cover"
-                      />
+              <div className={`transition-all duration-500 ease-out ${
+                selectedProduct 
+                  ? 'opacity-100 max-h-96 translate-y-0' 
+                  : 'opacity-0 max-h-0 -translate-y-4 overflow-hidden'
+              }`}>
+                {selectedProduct && (
+                  <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                    <h3 className="text-silver-bright mb-4 flex items-center">
+                      <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                      Выбранная модель
+                    </h3>
+                    <div className="flex gap-4 p-4 bg-slate-dark rounded-lg border border-silver-accent">
+                      <div className="w-20 h-20 overflow-hidden rounded-lg">
+                        <ImageWithFallback
+                          src={selectedProduct.image}
+                          alt={selectedProduct.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-silver-bright mb-1">{selectedProduct.name}</h4>
+                        <p className="text-silver-dim text-sm mb-2">{selectedProduct.description}</p>
+                        <p className="text-chrome">₽{selectedProduct.price.toLocaleString()}</p>
+                      </div>
+                      <Button
+                        onClick={() => setIsProductModalOpen(true)}
+                        variant="outline"
+                        size="sm"
+                        className="border-steel-dark text-silver-dim hover:bg-steel-dark"
+                      >
+                        Изменить
+                      </Button>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-silver-bright mb-1">{selectedProduct.name}</h4>
-                      <p className="text-silver-dim text-sm mb-2">{selectedProduct.description}</p>
-                      <p className="text-chrome">₽{selectedProduct.price.toLocaleString()}</p>
-                    </div>
-                    <Button
-                      onClick={() => setIsProductModalOpen(true)}
-                      variant="outline"
-                      size="sm"
-                      className="border-steel-dark text-silver-dim hover:bg-steel-dark"
-                    >
-                      Изменить
-                    </Button>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
 
               {/* Step 3: Size */}
-              {selectedProduct && (
-                <div className="constructor-step bg-graphite rounded-lg p-6 border border-slate-dark constructor-step-enter-active">
-                  <h3 className="text-silver-bright mb-4 flex items-center">
-                    <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">3</span>
-                    Выберите размер
-                  </h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="ring-size" className="text-silver-dim">Размер кольца</Label>
-                    <Input
-                      id="ring-size"
-                      type="number"
-                      min="10"
-                      max="30"
-                      step="0.5"
-                      value={selectedSize}
-                      onChange={(e) => setSelectedSize(e.target.value)}
-                      placeholder="Например: 18.5"
-                      className="border-slate-dark bg-slate-dark text-silver-muted"
-                    />
+              <div className={`transition-all duration-500 ease-out delay-200 ${
+                selectedProduct 
+                  ? 'opacity-100 max-h-96 translate-y-0' 
+                  : 'opacity-0 max-h-0 -translate-y-4 overflow-hidden'
+              }`}>
+                {selectedProduct && (
+                  <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                    <h3 className="text-silver-bright mb-4 flex items-center">
+                      <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                      Выберите размер
+                    </h3>
+                    <div className="space-y-2">
+                      <Label htmlFor="ring-size" className="text-silver-dim">Размер кольца</Label>
+                      <Input
+                        id="ring-size"
+                        type="number"
+                        min="10"
+                        max="30"
+                        step="0.5"
+                        value={selectedSize}
+                        onChange={(e) => setSelectedSize(e.target.value)}
+                        placeholder="Например: 18.5"
+                        className="border-slate-dark bg-slate-dark text-silver-muted"
+                      />
+                    </div>
+                    <p className="text-sm text-silver-shadow mt-2">
+                      Не знаете свой размер? <button className="text-silver-accent hover:text-silver-accent-light">Таблица размеров</button>
+                    </p>
                   </div>
-                  <p className="text-sm text-silver-shadow mt-2">
-                    Не знаете свой размер? <button className="text-silver-accent hover:text-silver-accent-light">Таблица размеров</button>
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Preview Panel */}
