@@ -3,8 +3,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
-import { Modal } from './ui/modal'
-import { ImageWithFallback } from './ImageWithFallback'
+import { ProductSelectionModal } from './modals/ProductSelectionModal'
 import { ShoppingBag, Wrench } from 'lucide-react'
 import type { Product } from '../types'
 
@@ -251,35 +250,13 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
         </div>
 
         {/* Product Selection Modal */}
-        <Modal
+        <ProductSelectionModal
           isOpen={isProductModalOpen}
           onClose={() => setIsProductModalOpen(false)}
           title={`Выберите модель (${filteredProducts.length} доступно)`}
-          className="max-w-4xl"
-        >
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => handleProductSelect(product)}
-                className="cursor-pointer rounded-lg border-2 border-slate-dark hover:border-silver-accent-light transition-all duration-300"
-              >
-                <div className="aspect-square overflow-hidden rounded-t-lg">
-                  <ImageWithFallback
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-3">
-                  <h4 className="text-sm text-silver-bright mb-1">{product.name}</h4>
-                  <p className="text-xs text-silver-dim mb-2">{product.description}</p>
-                  <p className="text-chrome text-sm">₽{product.price.toLocaleString()}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Modal>
+          products={filteredProducts}
+          onSelectProduct={handleProductSelect}
+        />
         {/* Info Section */}
         <div className="mt-16 bg-slate-dark rounded-lg p-8">
           <h3 className="text-silver-bright mb-6 text-center">Как работает конструктор</h3>
