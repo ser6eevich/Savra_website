@@ -40,35 +40,32 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
         onClick={onClose}
       />
       
-      {/* Modal Container - Scrollable */}
-      <div className="fixed inset-0 overflow-y-auto">
-        <div className="flex min-h-full items-start justify-center p-4 sm:items-center">
-          <div className={cn(
-            "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl",
-            "w-full max-w-2xl transform transition-all duration-300 ease-out",
-            "animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4",
-            "my-8",
-            className
-          )}>
-            {/* Header */}
-            {title && (
-              <div className="flex items-center justify-between p-6 border-b border-slate-dark">
-                <h2 className="text-xl text-silver-bright">{title}</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="p-2 hover:bg-slate-dark text-silver-dim hover:text-silver-accent-light"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
-            
-            {/* Content */}
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
-              {children}
+      {/* Modal Container - Fixed positioning for screen center */}
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className={cn(
+          "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl",
+          "w-full max-w-6xl max-h-[95vh] transform transition-all duration-300 ease-out",
+          "animate-in fade-in-0 zoom-in-95",
+          className
+        )}>
+          {/* Header */}
+          {title && (
+            <div className="flex items-center justify-between p-6 border-b border-slate-dark flex-shrink-0">
+              <h2 className="text-xl text-silver-bright">{title}</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="p-2 hover:bg-slate-dark text-silver-dim hover:text-silver-accent-light"
+              >
+                <X className="w-4 h-4" />
+              </Button>
             </div>
+          )}
+          
+          {/* Content - No scroll, just large enough */}
+          <div className="p-6">
+            {children}
           </div>
         </div>
       </div>
