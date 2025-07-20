@@ -79,11 +79,6 @@ export function AdminPage({
   }
 
   // Mock customer data
-  const customers = [
-    { id: '1', name: 'Елена Савра', email: 'elena@example.com', orders: 3, spent: 25500, registeredAt: new Date('2024-01-15') },
-    { id: '2', name: 'Анна Петрова', email: 'anna@example.com', orders: 1, spent: 8500, registeredAt: new Date('2024-02-20') },
-    { id: '3', name: 'Мария Иванова', email: 'maria@example.com', orders: 5, spent: 42000, registeredAt: new Date('2024-01-10') },
-  ]
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const productData = {
@@ -215,17 +210,6 @@ export function AdminPage({
             Товары
           </button>
           <button
-            onClick={() => setActiveTab('customers')}
-            className={`flex-1 py-3 px-4 rounded-md transition-all duration-300 flex items-center justify-center ${
-              activeTab === 'customers'
-                ? 'bg-silver-accent text-silver-bright'
-                : 'text-silver-dim hover:text-silver-accent-light'
-            }`}
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Клиенты
-          </button>
-          <button
             onClick={() => setActiveTab('promo')}
             className={`flex-1 py-3 px-4 rounded-md transition-all duration-300 flex items-center justify-center ${
               activeTab === 'promo'
@@ -336,41 +320,6 @@ export function AdminPage({
           </div>
         )}
 
-        {/* Customers Tab */}
-        {activeTab === 'customers' && (
-          <div className="space-y-6">
-            <h2 className="text-silver-bright">Клиенты</h2>
-            
-            <div className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-dark">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-silver-dim">Имя</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Email</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Заказов</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Потрачено</th>
-                      <th className="px-6 py-3 text-left text-silver-dim">Регистрация</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {customers.map((customer) => (
-                      <tr key={customer.id} className="border-t border-slate-dark">
-                        <td className="px-6 py-4 text-silver-bright">{customer.name}</td>
-                        <td className="px-6 py-4 text-silver-muted">{customer.email}</td>
-                        <td className="px-6 py-4 text-silver-muted">{customer.orders}</td>
-                        <td className="px-6 py-4 text-chrome">₽{customer.spent.toLocaleString()}</td>
-                        <td className="px-6 py-4 text-silver-muted">
-                          {customer.registeredAt.toLocaleDateString('ru-RU')}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
         {/* Promo Codes Tab */}
         {activeTab === 'promo' && (
           <div className="space-y-6">

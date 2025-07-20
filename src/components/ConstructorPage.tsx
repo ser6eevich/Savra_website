@@ -3,6 +3,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Modal } from './ui/modal'
 import { ImageWithFallback } from './ImageWithFallback'
 import { ShoppingBag, Wrench } from 'lucide-react'
 import type { Product } from '../types'
@@ -14,6 +15,7 @@ interface ConstructorPageProps {
 }
 
 const categories = [
+  { id: 'all', name: 'Все' },
   { id: 'classic', name: 'Классические' },
   { id: 'textured', name: 'Текстурные' },
   { id: 'mens', name: 'Мужские' }
@@ -24,11 +26,11 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>('')
-  const [showProductStep, setShowProductStep] = useState(false)
-  const [showSizeStep, setShowSizeStep] = useState(false)
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false)
 
   const filteredProducts = selectedCategory 
     ? products.filter(product => {
+        if (selectedCategory === 'all') return true
         switch (selectedCategory) {
           case 'classic':
             return product.type === 'classic' || product.type === 'classic_mens'
@@ -46,20 +48,18 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
     setSelectedCategory(categoryId)
     setSelectedProduct(null)
     setSelectedSize('')
-    setShowSizeStep(false)
     
-    setTimeout(() => {
-      setShowProductStep(true)
-    }, 300)
+    if (categoryId) {
+      setTimeout(() => {
+        setIsProductModalOpen(true)
+      }, 300)
+    }
   }
 
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product)
     setSelectedSize('')
-    
-    setTimeout(() => {
-      setShowSizeStep(true)
-    }, 300)
+    setIsProductModalOpen(false)
   }
 
   const handleCreateOrder = () => {
@@ -116,49 +116,41 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                 </Select>
               </div>
 
-              {/* Step 2: Product */}
-              {selectedCategory && (
-                <div className={`constructor-step bg-graphite rounded-lg p-6 border border-slate-dark ${
-                  showProductStep ? 'constructor-step-enter-active' : 'constructor-step-enter'
-                }`}>
+              {/* Step 2: Selected Product */}
+              {selectedProduct && (
+                <div className="constructor-step bg-graphite rounded-lg p-6 border border-slate-dark constructor-step-enter-active">
                   <h3 className="text-silver-bright mb-4 flex items-center">
                     <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">2</span>
-                    Выберите модель ({filteredProducts.length} доступно)
+                    Выбранная модель
                   </h3>
-                  <div className="grid grid-cols-2 gap-4 max-h-64 overflow-y-auto">
-                    {filteredProducts.map((product) => (
-                      <div
-                        key={product.id}
-                        onClick={() => handleProductSelect(product)}
-                        className={`cursor-pointer rounded-lg border-2 transition-all duration-300 ${
-                          selectedProduct?.id === product.id
-                            ? 'border-silver-accent bg-slate-dark'
-                            : 'border-slate-dark hover:border-silver-accent-light'
-                        }`}
-                      >
-                        <div className="aspect-square overflow-hidden rounded-t-lg">
-                          <ImageWithFallback
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="p-3">
-                          <h4 className="text-sm text-silver-bright mb-1">{product.name}</h4>
-                          <p className="text-xs text-silver-dim mb-2">{product.description}</p>
-                          <p className="text-chrome text-sm">₽{product.price.toLocaleString()}</p>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex gap-4 p-4 bg-slate-dark rounded-lg border border-silver-accent">
+                    <div className="w-20 h-20 overflow-hidden rounded-lg">
+                      <ImageWithFallback
+                        src={selectedProduct.image}
+                        alt={selectedProduct.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-silver-bright mb-1">{selectedProduct.name}</h4>
+                      <p className="text-silver-dim text-sm mb-2">{selectedProduct.description}</p>
+                      <p className="text-chrome">₽{selectedProduct.price.toLocaleString()}</p>
+                    </div>
+                    <Button
+                      onClick={() => setIsProductModalOpen(true)}
+                      variant="outline"
+                      size="sm"
+                      className="border-steel-dark text-silver-dim hover:bg-steel-dark"
+                    >
+                      Изменить
+                    </Button>
                   </div>
                 </div>
               )}
 
               {/* Step 3: Size */}
               {selectedProduct && (
-                <div className={`constructor-step bg-graphite rounded-lg p-6 border border-slate-dark ${
-                  showSizeStep ? 'constructor-step-enter-active' : 'constructor-step-enter'
-                }`}>
+                <div className="constructor-step bg-graphite rounded-lg p-6 border border-slate-dark constructor-step-enter-active">
                   <h3 className="text-silver-bright mb-4 flex items-center">
                     <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">3</span>
                     Выберите размер
@@ -258,6 +250,36 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
           </div>
         </div>
 
+        {/* Product Selection Modal */}
+        <Modal
+          isOpen={isProductModalOpen}
+          onClose={() => setIsProductModalOpen(false)}
+          title={`Выберите модель (${filteredProducts.length} доступно)`}
+          className="max-w-4xl"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+            {filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                onClick={() => handleProductSelect(product)}
+                className="cursor-pointer rounded-lg border-2 border-slate-dark hover:border-silver-accent-light transition-all duration-300"
+              >
+                <div className="aspect-square overflow-hidden rounded-t-lg">
+                  <ImageWithFallback
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-3">
+                  <h4 className="text-sm text-silver-bright mb-1">{product.name}</h4>
+                  <p className="text-xs text-silver-dim mb-2">{product.description}</p>
+                  <p className="text-chrome text-sm">₽{product.price.toLocaleString()}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Modal>
         {/* Info Section */}
         <div className="mt-16 bg-slate-dark rounded-lg p-8">
           <h3 className="text-silver-bright mb-6 text-center">Как работает конструктор</h3>
