@@ -131,6 +131,29 @@ html {
 
 /* Custom utility classes for monochromatic theme */
 @layer utilities {
+  /* Page transitions */
+  .page-transition {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+  
+  .page-transition.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .page-fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .page-fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
   /* Black/gray backgrounds */
   .bg-pure-black { background-color: var(--color-pure-black); }
   .bg-charcoal { background-color: var(--color-charcoal); }

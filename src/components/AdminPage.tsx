@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRef } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
@@ -13,7 +14,10 @@ import {
   Users, 
   DollarSign,
   Tag,
-  Settings
+  Settings,
+  Upload,
+  X,
+  Play
 } from 'lucide-react'
 import type { Product, PromoCode, AdminStats } from '../types'
 
@@ -36,17 +40,20 @@ export function AdminPage({
   onAddPromoCode,
   onDeletePromoCode
 }: AdminPageProps) {
-  const [activeTab, setActiveTab] = useState<'stats' | 'products' | 'promo'>('stats')
+  const [activeTab, setActiveTab] = useState<'stats' | 'products' | 'promo' | 'customers'>('stats')
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
   
   const [productForm, setProductForm] = useState({
     name: '',
     description: '',
     detailedDescription: '',
     price: 0,
-    image: '',
+    images: [] as string[],
+    video: '',
     category: 'rings',
     collection: '',
     article: '',
@@ -71,12 +78,22 @@ export function AdminPage({
     recentOrders: []
   }
 
+  // Mock customer data
+  const customers = [
+    { id: '1', name: 'Елена Савра', email: 'elena@example.com', orders: 3, spent: 25500, registeredAt: new Date('2024-01-15') },
+    { id: '2', name: 'Анна Петрова', email: 'anna@example.com', orders: 1, spent: 8500, registeredAt: new Date('2024-02-20') },
+    { id: '3', name: 'Мария Иванова', email: 'maria@example.com', orders: 5, spent: 42000, registeredAt: new Date('2024-01-10') },
+  ]
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const productData = {
+      ...productForm,
+      image: productForm.images[0] || '', // Use first image as main image for compatibility
+    }
     if (editingProduct) {
-      onUpdateProduct(editingProduct.id, productForm)
+      onUpdateProduct(editingProduct.id, productData)
     } else {
-      onAddProduct(productForm)
+      onAddProduct(productData)
     }
     setIsProductModalOpen(false)
     setEditingProduct(null)
@@ -96,7 +113,8 @@ export function AdminPage({
       description: '',
       detailedDescription: '',
       price: 0,
-      image: '',
+      images: [],
+      video: '',
       category: 'rings',
       collection: '',
       article: '',
@@ -122,7 +140,8 @@ export function AdminPage({
       description: product.description,
       detailedDescription: product.detailedDescription || '',
       price: product.price,
-      image: product.image,
+      images: [product.image], // Convert single image to array
+      video: '',
       category: product.category,
       collection: product.collection || '',
       article: product.article || '',
@@ -133,6 +152,35 @@ export function AdminPage({
     setIsProductModalOpen(true)
   }
 
+  const handleFileUpload = (files: FileList | null, type: 'image' | 'video') => {
+    if (!files) return
+    
+    Array.from(files).forEach(file => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const result = e.target?.result as string
+        if (type === 'image' && productForm.images.length < 10) {
+          setProductForm(prev => ({
+            ...prev,
+            images: [...prev.images, result]
+          }))
+        } else if (type === 'video') {
+          setProductForm(prev => ({
+            ...prev,
+            video: result
+          }))
+        }
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const removeImage = (index: number) => {
+    setProductForm(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }))
+  }
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -165,6 +213,17 @@ export function AdminPage({
           >
             <Package className="w-4 h-4 mr-2" />
             Товары
+          </button>
+          <button
+            onClick={() => setActiveTab('customers')}
+            className={`flex-1 py-3 px-4 rounded-md transition-all duration-300 flex items-center justify-center ${
+              activeTab === 'customers'
+                ? 'bg-silver-accent text-silver-bright'
+                : 'text-silver-dim hover:text-silver-accent-light'
+            }`}
+          >
+            <Users className="w-4 h-4 mr-2" />
+            Клиенты
           </button>
           <button
             onClick={() => setActiveTab('promo')}
@@ -277,6 +336,41 @@ export function AdminPage({
           </div>
         )}
 
+        {/* Customers Tab */}
+        {activeTab === 'customers' && (
+          <div className="space-y-6">
+            <h2 className="text-silver-bright">Клиенты</h2>
+            
+            <div className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-dark">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-silver-dim">Имя</th>
+                      <th className="px-6 py-3 text-left text-silver-dim">Email</th>
+                      <th className="px-6 py-3 text-left text-silver-dim">Заказов</th>
+                      <th className="px-6 py-3 text-left text-silver-dim">Потрачено</th>
+                      <th className="px-6 py-3 text-left text-silver-dim">Регистрация</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {customers.map((customer) => (
+                      <tr key={customer.id} className="border-t border-slate-dark">
+                        <td className="px-6 py-4 text-silver-bright">{customer.name}</td>
+                        <td className="px-6 py-4 text-silver-muted">{customer.email}</td>
+                        <td className="px-6 py-4 text-silver-muted">{customer.orders}</td>
+                        <td className="px-6 py-4 text-chrome">₽{customer.spent.toLocaleString()}</td>
+                        <td className="px-6 py-4 text-silver-muted">
+                          {customer.registeredAt.toLocaleDateString('ru-RU')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Promo Codes Tab */}
         {activeTab === 'promo' && (
           <div className="space-y-6">
@@ -386,15 +480,77 @@ export function AdminPage({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="image">URL изображения</Label>
-              <Input
-                id="image"
-                value={productForm.image}
-                onChange={(e) => setProductForm(prev => ({ ...prev, image: e.target.value }))}
-                className="border-slate-dark bg-slate-dark text-silver-muted"
-                required
+            {/* Image Upload */}
+            <div className="space-y-4">
+              <Label>Фотографии товара (до 10 штук)</Label>
+              <div 
+                className="border-2 border-dashed border-slate-dark rounded-lg p-6 text-center hover:border-silver-accent transition-colors cursor-pointer"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="w-8 h-8 text-silver-shadow mx-auto mb-2" />
+                <p className="text-silver-dim">Перетащите фото или нажмите для выбора</p>
+                <p className="text-silver-shadow text-sm">PNG, JPG до 5MB</p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => handleFileUpload(e.target.files, 'image')}
+                className="hidden"
               />
+              
+              {/* Image Preview */}
+              {productForm.images.length > 0 && (
+                <div className="grid grid-cols-3 gap-2">
+                  {productForm.images.map((image, index) => (
+                    <div key={index} className="relative aspect-square bg-slate-dark rounded overflow-hidden">
+                      <img src={image} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                      <Button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 w-6 h-6 p-0 bg-destructive hover:bg-destructive/80"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Video Upload */}
+            <div className="space-y-4">
+              <Label>Видео товара (1 видео)</Label>
+              <div 
+                className="border-2 border-dashed border-slate-dark rounded-lg p-6 text-center hover:border-silver-accent transition-colors cursor-pointer"
+                onClick={() => videoInputRef.current?.click()}
+              >
+                <Play className="w-8 h-8 text-silver-shadow mx-auto mb-2" />
+                <p className="text-silver-dim">Перетащите видео или нажмите для выбора</p>
+                <p className="text-silver-shadow text-sm">MP4, MOV до 50MB</p>
+              </div>
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/*"
+                onChange={(e) => handleFileUpload(e.target.files, 'video')}
+                className="hidden"
+              />
+              
+              {/* Video Preview */}
+              {productForm.video && (
+                <div className="relative aspect-video bg-slate-dark rounded overflow-hidden">
+                  <video src={productForm.video} className="w-full h-full object-cover" controls />
+                  <Button
+                    type="button"
+                    onClick={() => setProductForm(prev => ({ ...prev, video: '' }))}
+                    className="absolute top-2 right-2 w-8 h-8 p-0 bg-destructive hover:bg-destructive/80"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

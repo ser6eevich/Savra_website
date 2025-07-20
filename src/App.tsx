@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { CatalogPage } from './components/CatalogPage';
@@ -15,6 +16,7 @@ import type { CartItem, Product, User, Order, PromoCode } from './types';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>(['1', '2']); // Demo favorites
@@ -73,16 +75,16 @@ export default function App() {
   ]);
 
   const handleNavigate = (page: string, productId?: string) => {
-    // Add smooth transition effect
-    document.body.style.opacity = '0.95';
+    setIsTransitioning(true);
     setTimeout(() => {
-      document.body.style.opacity = '1';
-    }, 150);
-    
-    setCurrentPage(page);
-    if (productId) {
-      setSelectedProductId(productId);
-    }
+      setCurrentPage(page);
+      if (productId) {
+        setSelectedProductId(productId);
+      }
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 50);
+    }, 200);
   };
 
   const handleAddToCart = (product: Product & { quantity?: number; size?: string }) => {
@@ -309,7 +311,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background transition-opacity duration-300">
+    <div className="min-h-screen bg-background">
       <Header
         currentPage={currentPage}
         onNavigate={handleNavigate}
@@ -320,7 +322,7 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onLogout={handleLogout}
       />
-      <main>
+      <main className={`page-transition ${!isTransitioning ? 'active' : ''}`}>
         {renderCurrentPage()}
       </main>
       

@@ -18,8 +18,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
             alt="Серебряные украшения Savra"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-pure-black/60"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-charcoal/30 to-charcoal/80"></div>
+          <div className="absolute inset-0 bg-pure-black/75"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-pure-black/40 via-charcoal/60 to-charcoal/90"></div>
         </div>
         
         <div className="relative z-10 text-center max-w-4xl mx-auto px-4">

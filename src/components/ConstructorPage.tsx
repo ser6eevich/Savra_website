@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from './ui/button'
+import { Input } from './ui/input'
+import { Label } from './ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { ImageWithFallback } from './ImageWithFallback'
 import { ShoppingBag, Wrench } from 'lucide-react'
@@ -17,7 +19,6 @@ const categories = [
   { id: 'mens', name: 'Мужские' }
 ]
 
-const sizes = ['15', '16', '17', '18', '19', '20', '21', '22']
 
 export function ConstructorPage({ onNavigate, onAddToCart, products }: ConstructorPageProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
@@ -135,22 +136,20 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                     <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">3</span>
                     Выберите размер
                   </h3>
-                  <Select value={selectedSize} onValueChange={setSelectedSize}>
-                    <SelectTrigger className="border-slate-dark bg-slate-dark text-silver-muted">
-                      <SelectValue placeholder="Выберите размер кольца" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-graphite border-slate-dark">
-                      {sizes.map((size) => (
-                        <SelectItem 
-                          key={size} 
-                          value={size}
-                          className="text-silver-muted hover:bg-slate-dark"
-                        >
-                          Размер {size}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="space-y-2">
+                    <Label htmlFor="ring-size" className="text-silver-dim">Размер кольца</Label>
+                    <Input
+                      id="ring-size"
+                      type="number"
+                      min="10"
+                      max="30"
+                      step="0.5"
+                      value={selectedSize}
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                      placeholder="Например: 18.5"
+                      className="border-slate-dark bg-slate-dark text-silver-muted"
+                    />
+                  </div>
                   <p className="text-sm text-silver-shadow mt-2">
                     Не знаете свой размер? <button className="text-silver-accent hover:text-silver-accent-light">Таблица размеров</button>
                   </p>
