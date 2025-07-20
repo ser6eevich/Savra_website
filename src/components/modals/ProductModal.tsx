@@ -48,7 +48,7 @@ export function ProductModal({
       isOpen={isOpen}
       onClose={onClose}
       title={editingProduct ? 'Редактировать товар' : 'Добавить товар'}
-      className="max-w-4xl max-h-[95vh]"
+      className="max-w-5xl max-h-[85vh]"
     >
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
