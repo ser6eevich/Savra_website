@@ -327,8 +327,6 @@ export function AdminPage({
             </div>
           </div>
         )}
-
-        {/* Promo Codes Tab */}
         </div>
 
         {/* Promo Codes Tab */}
@@ -391,6 +389,14 @@ export function AdminPage({
                           </td>
                         </tr>
                       ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Modals */}
         <ProductModal
           isOpen={isProductModalOpen}
