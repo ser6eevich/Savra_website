@@ -43,7 +43,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       {/* Modal Container - Fixed positioning relative to viewport */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
         <div className={cn(
-          "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl pointer-events-auto",
+          "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl w-full max-w-lg max-h-[85vh]",
           "w-full max-w-4xl max-h-[90vh] transform transition-all duration-300 ease-out",
           "animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4",
           "flex flex-col",
