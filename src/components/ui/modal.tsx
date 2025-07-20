@@ -22,6 +22,8 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
     if (isOpen) {
       document.addEventListener('keydown', handleEscape)
       document.body.style.overflow = 'hidden'
+      // Прокручиваем страницу наверх при открытии модального окна
+      window.scrollTo(0, 0)
     }
 
     return () => {
@@ -33,18 +35,19 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-[9999]" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-pure-black/80 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-pure-black/80 backdrop-blur-sm"
         onClick={onClose}
       />
       
-      {/* Modal Container - Fixed positioning for screen center */}
-      <div className="fixed inset-0 flex items-center justify-center p-4">
+      {/* Modal Container - Точно по центру viewport */}
+      <div className="absolute inset-0 flex items-center justify-center p-4">
         <div className={cn(
           "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl",
-          "w-full max-w-6xl max-h-[95vh] transform transition-all duration-300 ease-out",
+          "w-full max-w-6xl max-h-[95vh]",
+          "transform transition-all duration-300 ease-out",
           "animate-in fade-in-0 zoom-in-95",
           className
         )}>
@@ -63,7 +66,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
             </div>
           )}
           
-          {/* Content - No scroll, just large enough */}
+          {/* Content */}
           <div className="p-6">
             {children}
           </div>
