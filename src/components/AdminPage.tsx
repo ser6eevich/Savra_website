@@ -41,6 +41,7 @@ export function AdminPage({
   onDeletePromoCode
 }: AdminPageProps) {
   const [activeTab, setActiveTab] = useState<'stats' | 'products' | 'promo' | 'customers'>('stats')
+  const [isTabTransitioning, setIsTabTransitioning] = useState(false)
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)

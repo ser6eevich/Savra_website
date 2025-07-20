@@ -42,8 +42,8 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       
       {/* Modal */}
       <div className={cn(
-        "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl max-h-[90vh] overflow-y-auto",
-        "w-full max-w-md mx-4 transform transition-all duration-300 ease-out",
+        "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl max-h-[95vh] overflow-y-auto",
+        "w-full mx-4 transform transition-all duration-300 ease-out",
         "animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4",
         className
       )}>
