@@ -4,6 +4,7 @@ import { Input } from './ui/input';
 import { ArrowLeft, Minus, Plus, Trash2, Tag, CreditCard, Calendar } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
 import { Separator } from './ui/separator';
+import { Notification } from './ui/notification';
 import type { CartItem } from '../types';
 
 interface CartPageProps {
@@ -28,6 +29,7 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoDiscount, setPromoDiscount] = useState(0);
+  const [showOrderNotification, setShowOrderNotification] = useState(false);
 
   // Use demo item if cart is empty for display purposes
   const displayItems = cartItems.length > 0 ? cartItems : [demoCartItem];
@@ -56,8 +58,22 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
     setPromoCode('');
   };
 
+  const handleOrderSubmit = () => {
+    setShowOrderNotification(true);
+    // Здесь будет логика отправки заказа в CRM
+    // Можно различать заказы по типу: catalog или constructor
+  };
+
   return (
     <div className="min-h-screen py-8">
+      <Notification
+        isOpen={showOrderNotification}
+        onClose={() => setShowOrderNotification(false)}
+        type="success"
+        title="Заказ принят!"
+        message="Спасибо за заказ! Наш менеджер свяжется с вами в ближайшее время для подтверждения деталей."
+      />
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -203,10 +219,11 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
             {/* Payment Options */}
             <div className="space-y-3">
               <Button
+                onClick={handleOrderSubmit}
                 className="w-full bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-3 tracking-wide transition-all duration-300"
               >
                 <CreditCard className="w-5 h-5 mr-2" />
-                Купить сейчас
+                Оформить заказ
               </Button>
               
               <Button

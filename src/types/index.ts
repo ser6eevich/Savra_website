@@ -41,6 +41,7 @@ export interface Order {
   items: CartItem[];
   total: number;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  orderType: 'catalog' | 'constructor'; // Различие для CRM
   createdAt: Date;
   updatedAt: Date;
   promoCode?: string;

@@ -21,6 +21,7 @@ const categoryNames = {
 
 export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorites, products }: CatalogPageProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const categories = ['all', 'classic', 'textured', 'mens'];
   
   const filteredRings = selectedCategory === 'all' 
@@ -37,6 +38,18 @@ export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorit
             return true;
         }
       });
+
+  const handleCategoryChange = (category: string) => {
+    if (category === selectedCategory) return;
+    
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setSelectedCategory(category);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 50);
+    }, 200);
+  };
 
   return (
     <div className="min-h-screen py-8">
@@ -56,7 +69,7 @@ export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorit
             <Button
               key={category}
               variant={selectedCategory === category ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => handleCategoryChange(category)}
               className={`tracking-wide transition-all duration-300 ${
                 selectedCategory === category
                   ? 'bg-silver-accent text-silver-bright hover:bg-silver-accent-light'
@@ -76,9 +89,11 @@ export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorit
         </div>
 
         {/* Ring Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 catalog-transition ${
+          isTransitioning ? 'catalog-fade-exit-active' : 'catalog-fade-enter-active'
+        }`}>
           {filteredRings.map((ring) => (
-            <div key={ring.id} className="bg-graphite rounded-lg border border-slate-dark overflow-hidden transition-all duration-300 hover:border-silver-accent">
+            <div key={ring.id} className="product-grid-item bg-graphite rounded-lg border border-slate-dark overflow-hidden hover:border-silver-accent hover:shadow-lg">
               <div className="aspect-square overflow-hidden">
                 <ImageWithFallback
                   src={ring.image}

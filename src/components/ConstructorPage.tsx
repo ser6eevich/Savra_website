@@ -24,6 +24,8 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>('')
+  const [showProductStep, setShowProductStep] = useState(false)
+  const [showSizeStep, setShowSizeStep] = useState(false)
 
   const filteredProducts = selectedCategory 
     ? products.filter(product => {
@@ -40,9 +42,30 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
       })
     : []
 
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId)
+    setSelectedProduct(null)
+    setSelectedSize('')
+    setShowSizeStep(false)
+    
+    setTimeout(() => {
+      setShowProductStep(true)
+    }, 300)
+  }
+
+  const handleProductSelect = (product: Product) => {
+    setSelectedProduct(product)
+    setSelectedSize('')
+    
+    setTimeout(() => {
+      setShowSizeStep(true)
+    }, 300)
+  }
+
   const handleCreateOrder = () => {
     if (selectedProduct && selectedSize) {
-      onAddToCart({ ...selectedProduct, size: selectedSize })
+      // Добавляем метку что это заказ из конструктора
+      onAddToCart({ ...selectedProduct, size: selectedSize, orderType: 'constructor' })
       // Можно добавить уведомление об успешном добавлении
       alert('Заказ сформирован и добавлен в корзину!')
     }
@@ -84,6 +107,7 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                       <SelectItem 
                         key={category.id} 
                         value={category.id}
+                        onClick={() => handleCategorySelect(category.id)}
                         className="text-silver-muted hover:bg-slate-dark"
                       >
                         {category.name}
@@ -95,7 +119,9 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
 
               {/* Step 2: Product */}
               {selectedCategory && (
-                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                <div className={`constructor-step bg-graphite rounded-lg p-6 border border-slate-dark ${
+                  showProductStep ? 'constructor-step-enter-active' : 'constructor-step-enter'
+                }`}>
                   <h3 className="text-silver-bright mb-4 flex items-center">
                     <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">2</span>
                     Выберите модель ({filteredProducts.length} доступно)
@@ -104,7 +130,7 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                     {filteredProducts.map((product) => (
                       <div
                         key={product.id}
-                        onClick={() => setSelectedProduct(product)}
+                        onClick={() => handleProductSelect(product)}
                         className={`cursor-pointer rounded-lg border-2 transition-all duration-300 ${
                           selectedProduct?.id === product.id
                             ? 'border-silver-accent bg-slate-dark'
@@ -131,7 +157,9 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
 
               {/* Step 3: Size */}
               {selectedProduct && (
-                <div className="bg-graphite rounded-lg p-6 border border-slate-dark">
+                <div className={`constructor-step bg-graphite rounded-lg p-6 border border-slate-dark ${
+                  showSizeStep ? 'constructor-step-enter-active' : 'constructor-step-enter'
+                }`}>
                   <h3 className="text-silver-bright mb-4 flex items-center">
                     <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">3</span>
                     Выберите размер

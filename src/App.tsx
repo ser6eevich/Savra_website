@@ -94,7 +94,8 @@ export default function App() {
       price: product.price,
       image: product.image,
       quantity: product.quantity || 1,
-      size: product.size
+      size: product.size,
+      orderType: (product as any).orderType || 'catalog' // Определяем тип заказа
     };
 
     setCartItems(prev => {

@@ -214,3 +214,53 @@ html {
   .border-silver-dark { border-color: var(--color-silver-dark); }
   .border-silver-shadow { border-color: var(--color-silver-shadow); }
 }
+
+/* Плавные переходы для каталога */
+.catalog-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catalog-fade-enter {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+}
+
+.catalog-fade-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.catalog-fade-exit {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.catalog-fade-exit-active {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+}
+
+/* Плавные переходы для конструктора */
+.constructor-step {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.constructor-step-enter {
+  opacity: 0;
+  transform: translateX(30px);
+  max-height: 0;
+}
+
+.constructor-step-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  max-height: 500px;
+}
+
+.product-grid-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-grid-item:hover {
+  transform: translateY(-4px);
+}
