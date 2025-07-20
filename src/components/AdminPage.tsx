@@ -425,5 +425,41 @@ export function AdminPage({
         />
       </div>
     </div>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modals */}
+        <ProductModal
+          isOpen={isProductModalOpen}
+          onClose={() => {
+            setIsProductModalOpen(false)
+            setEditingProduct(null)
+            resetProductForm()
+          }}
+          onSubmit={handleProductSubmit}
+          editingProduct={editingProduct}
+          productForm={productForm}
+          setProductForm={setProductForm}
+          handleFileUpload={handleFileUpload}
+          removeImage={removeImage}
+        />
+
+        <PromoCodeModal
+          isOpen={isPromoModalOpen}
+          onClose={() => {
+            setIsPromoModalOpen(false)
+            resetPromoForm()
+          }}
+          onSubmit={handlePromoSubmit}
+          promoForm={promoForm}
+          setPromoForm={setPromoForm}
+        />
+      </div>
+    </div>
   )
 }
