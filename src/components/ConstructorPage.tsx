@@ -98,7 +98,7 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                   <span className="w-8 h-8 bg-silver-accent text-silver-bright rounded-full flex items-center justify-center text-sm mr-3">1</span>
                   Выберите категорию
                 </h3>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select value={selectedCategory} onValueChange={handleCategorySelect}>
                   <SelectTrigger className="border-slate-dark bg-slate-dark text-silver-muted">
                     <SelectValue placeholder="Выберите стиль кольца" />
                   </SelectTrigger>
@@ -107,7 +107,6 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
                       <SelectItem 
                         key={category.id} 
                         value={category.id}
-                        onClick={() => handleCategorySelect(category.id)}
                         className="text-silver-muted hover:bg-slate-dark"
                       >
                         {category.name}
