@@ -9,9 +9,10 @@ interface ModalProps {
   children: React.ReactNode
   title?: string
   className?: string
+  centerVertically?: boolean
 }
 
-export function Modal({ isOpen, onClose, children, title, className }: ModalProps) {
+export function Modal({ isOpen, onClose, children, title, className, centerVertically = true }: ModalProps) {
   React.useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -41,7 +42,9 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       />
       
       {/* Modal */}
-      <div className="flex min-h-screen items-start justify-center p-4 pt-16">
+      <div className={`flex min-h-screen justify-center p-4 ${
+        centerVertically ? 'items-center' : 'items-start pt-16'
+      }`}>
         <div className={cn(
           "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl max-h-[90vh] overflow-y-auto",
           "w-full transform transition-all duration-300 ease-out",

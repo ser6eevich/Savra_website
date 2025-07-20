@@ -49,6 +49,7 @@ export function ProductModal({
       onClose={onClose}
       title={editingProduct ? 'Редактировать товар' : 'Добавить товар'}
       className="max-w-5xl max-h-[85vh]"
+      centerVertically={false}
     >
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
