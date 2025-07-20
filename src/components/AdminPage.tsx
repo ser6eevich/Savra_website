@@ -173,6 +173,7 @@ export function AdminPage({
       images: prev.images.filter((_, i) => i !== index)
     }))
   }
+  
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -279,54 +280,54 @@ export function AdminPage({
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-silver-bright">Управление товарами</h2>
-              <Button
-                onClick={() => setIsProductModalOpen(true)}
-                className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Добавить товар
-              </Button>
-            </div>
+                <Button
+                  onClick={() => setIsProductModalOpen(true)}
+                  className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Добавить товар
+                </Button>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <div key={product.id} className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
-                  <div className="aspect-square">
-                    <ImageWithFallback
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-silver-bright mb-2">{product.name}</h3>
-                    <p className="text-silver-dim text-sm mb-2">{product.description}</p>
-                    <p className="text-chrome mb-4">₽{product.price.toLocaleString()}</p>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => openEditProduct(product)}
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 border-steel-dark text-silver-dim hover:bg-steel-dark"
-                      >
-                        <Edit className="w-3 h-3 mr-1" />
-                        Изменить
-                      </Button>
-                      <Button
-                        onClick={() => onDeleteProduct(product.id)}
-                        variant="outline"
-                        size="sm"
-                        className="border-destructive text-destructive hover:bg-destructive hover:text-white"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <div key={product.id} className="bg-graphite rounded-lg border border-slate-dark overflow-hidden">
+                    <div className="aspect-square">
+                      <ImageWithFallback
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-silver-bright mb-2">{product.name}</h3>
+                      <p className="text-silver-dim text-sm mb-2">{product.description}</p>
+                      <p className="text-chrome mb-4">₽{product.price.toLocaleString()}</p>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => openEditProduct(product)}
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 border-steel-dark text-silver-dim hover:bg-steel-dark"
+                        >
+                          <Edit className="w-3 h-3 mr-1" />
+                          Изменить
+                        </Button>
+                        <Button
+                          onClick={() => onDeleteProduct(product.id)}
+                          variant="outline"
+                          size="sm"
+                          className="border-destructive text-destructive hover:bg-destructive hover:text-white"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
 
         {/* Promo Codes Tab */}
@@ -389,42 +390,6 @@ export function AdminPage({
                           </td>
                         </tr>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Modals */}
-        <ProductModal
-          isOpen={isProductModalOpen}
-          onClose={() => {
-            setIsProductModalOpen(false)
-            setEditingProduct(null)
-            resetProductForm()
-          }}
-          onSubmit={handleProductSubmit}
-          editingProduct={editingProduct}
-          productForm={productForm}
-          setProductForm={setProductForm}
-          handleFileUpload={handleFileUpload}
-          removeImage={removeImage}
-        />
-
-        <PromoCodeModal
-          isOpen={isPromoModalOpen}
-          onClose={() => {
-            setIsPromoModalOpen(false)
-            resetPromoForm()
-          }}
-          onSubmit={handlePromoSubmit}
-          promoForm={promoForm}
-          setPromoForm={setPromoForm}
-        />
-      </div>
-    </div>
                     </tbody>
                   </table>
                 </div>
