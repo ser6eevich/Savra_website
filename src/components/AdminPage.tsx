@@ -392,7 +392,7 @@ export function AdminPage({
             resetProductForm()
           }}
           title={editingProduct ? 'Редактировать товар' : 'Добавить товар'}
-          className="max-w-2xl"
+          className="max-w-4xl max-h-[95vh]"
         >
           <form onSubmit={handleProductSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
