@@ -3,6 +3,7 @@ import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
+import { Notification } from './ui/notification'
 import { ProductSelectionModal } from './modals/ProductSelectionModal'
 import { ImageWithFallback } from './ImageWithFallback'
 import { ShoppingBag, Wrench } from 'lucide-react'
@@ -27,6 +28,7 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [isProductModalOpen, setIsProductModalOpen] = useState(false)
+  const [showOrderNotification, setShowOrderNotification] = useState(false)
 
   const filteredProducts = selectedCategory 
     ? products.filter(product => {
@@ -66,8 +68,7 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
     if (selectedProduct && selectedSize) {
       // Добавляем метку что это заказ из конструктора
       onAddToCart({ ...selectedProduct, size: selectedSize, orderType: 'constructor' })
-      // Можно добавить уведомление об успешном добавлении
-      alert('Заказ сформирован и добавлен в корзину!')
+      setShowOrderNotification(true)
     }
   }
 
@@ -75,6 +76,14 @@ export function ConstructorPage({ onNavigate, onAddToCart, products }: Construct
 
   return (
     <div className="min-h-screen py-8">
+      <Notification
+        isOpen={showOrderNotification}
+        onClose={() => setShowOrderNotification(false)}
+        type="success"
+        title="Заказ сформирован!"
+        message="Ваш индивидуальный заказ добавлен в корзину. Наш мастер изготовит кольцо специально для вас в течение 7-14 дней."
+      />
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
