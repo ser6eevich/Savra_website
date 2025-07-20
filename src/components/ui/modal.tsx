@@ -33,7 +33,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-pure-black/80 backdrop-blur-sm transition-opacity"
@@ -42,14 +42,14 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
       
       {/* Modal */}
       <div className={cn(
-        "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl max-h-[95vh] overflow-y-auto",
-        "w-full mx-4 transform transition-all duration-300 ease-out",
+        "relative bg-graphite rounded-lg border border-slate-dark shadow-2xl max-h-[90vh] overflow-hidden",
+        "w-full max-w-4xl transform transition-all duration-300 ease-out",
         "animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4",
         className
       )}>
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between p-6 border-b border-slate-dark">
+          <div className="flex items-center justify-between p-6 border-b border-slate-dark flex-shrink-0">
             <h2 className="text-xl text-silver-bright">{title}</h2>
             <Button
               variant="ghost"
@@ -63,7 +63,7 @@ export function Modal({ isOpen, onClose, children, title, className }: ModalProp
         )}
         
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
           {children}
         </div>
       </div>
