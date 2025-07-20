@@ -111,7 +111,7 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={() => onRemoveItem(`${item.id}-${item.size}`)}
                         className="p-1 text-silver-dim hover:text-destructive hover:bg-transparent"
                       >
                         <Trash2 className="w-4 h-4" />

@@ -117,18 +117,18 @@ export default function App() {
 
   const handleUpdateCartQuantity = (id: string, quantity: number) => {
     if (quantity <= 0) {
-      setCartItems(prev => prev.filter(item => item.id !== id));
+      setCartItems(prev => prev.filter(item => `${item.id}-${item.size}` !== id));
     } else {
       setCartItems(prev =>
         prev.map(item =>
-          item.id === id ? { ...item, quantity } : item
+          `${item.id}-${item.size}` === id ? { ...item, quantity } : item
         )
       );
     }
   };
 
   const handleRemoveFromCart = (id: string) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    setCartItems(prev => prev.filter(item => `${item.id}-${item.size}` !== id));
   };
 
   const handleToggleFavorite = (productId: string) => {
