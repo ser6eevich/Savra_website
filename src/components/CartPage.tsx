@@ -2,17 +2,9 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ArrowLeft, Minus, Plus, Trash2, Tag, CreditCard, Calendar } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './ImageWithFallback';
 import { Separator } from './ui/separator';
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-  size?: string;
-}
+import type { CartItem } from '../types';
 
 interface CartPageProps {
   cartItems: CartItem[];

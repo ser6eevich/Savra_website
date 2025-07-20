@@ -1,23 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Heart, ArrowLeft, ShoppingBag } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './ImageWithFallback';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Badge } from './ui/badge';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  collection: string;
-  article: string;
-  material: string;
-  detailedDescription: string;
-  sizes: string[];
-}
+import type { Product } from '../types';
 
 interface ProductDetailPageProps {
   productId: string;
@@ -166,7 +153,7 @@ export function ProductDetailPage({ productId, onNavigate, onAddToCart, onToggle
                   <SelectValue placeholder="Выберите размер кольца" />
                 </SelectTrigger>
                 <SelectContent className="bg-graphite border-slate-dark">
-                  {product.sizes.map((size) => (
+                  {product.sizes?.map((size) => (
                     <SelectItem key={size} value={size} className="text-silver-muted hover:bg-slate-dark">
                       Размер {size}
                     </SelectItem>

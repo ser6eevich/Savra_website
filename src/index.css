@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-size: 14px;
+  
+  /* Pure black theme - monochromatic silver/gray palette */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 91%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 91%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 91%;
+  --primary: 0 0% 25%;
+  --primary-foreground: 0 0% 91%;
+  --secondary: 0 0% 16%;
+  --secondary-foreground: 0 0% 79%;
+  --muted: 0 0% 6%;
+  --muted-foreground: 0 0% 55%;
+  --accent: 0 0% 20%;
+  --accent-foreground: 0 0% 91%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 91%;
+  --border: 0 0% 55% / 0.2;
+  --input: 0 0% 55% / 0.1;
+  --ring: 0 0% 40%;
+  --radius: 0.375rem;
+  
+  /* Monochromatic black/gray backgrounds */
+  --color-pure-black: #000000;
+  --color-charcoal: #0f0f0f;
+  --color-graphite: #1a1a1a;
+  --color-slate-dark: #2a2a2a;
+  --color-steel-dark: #333333;
+  --color-iron-dark: #404040;
+  
+  /* Silver accent colors - no green */
+  --color-silver-accent: #666666;
+  --color-silver-accent-light: #777777;
+  --color-silver-accent-dark: #555555;
+  --color-platinum: #888888;
+  --color-pewter: #999999;
+  --color-chrome: #aaaaaa;
+  
+  /* Silver text colors */
+  --color-silver-bright: #f0f2f4;
+  --color-silver-muted: #e8eaed;
+  --color-silver-dim: #c9cccf;
+  --color-silver-dark: #8b9197;
+  --color-silver-shadow: #6b7177;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/**
+ * Base typography
+ */
+@layer base {
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-silver-bright);
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--color-silver-muted);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-silver-muted);
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-silver-dim);
+  }
+
+  p {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-silver-dim);
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    color: var(--color-silver-dim);
+  }
+
+  button {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  input {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-silver-muted);
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Custom utility classes for monochromatic theme */
+@layer utilities {
+  /* Black/gray backgrounds */
+  .bg-pure-black { background-color: var(--color-pure-black); }
+  .bg-charcoal { background-color: var(--color-charcoal); }
+  .bg-graphite { background-color: var(--color-graphite); }
+  .bg-slate-dark { background-color: var(--color-slate-dark); }
+  .bg-steel-dark { background-color: var(--color-steel-dark); }
+  .bg-iron-dark { background-color: var(--color-iron-dark); }
+  
+  /* Silver accents */
+  .bg-silver-accent { background-color: var(--color-silver-accent); }
+  .bg-silver-accent-light { background-color: var(--color-silver-accent-light); }
+  .bg-silver-accent-dark { background-color: var(--color-silver-accent-dark); }
+  .bg-platinum { background-color: var(--color-platinum); }
+  .bg-pewter { background-color: var(--color-pewter); }
+  .bg-chrome { background-color: var(--color-chrome); }
+  
+  /* Silver text colors */
+  .text-silver-bright { color: var(--color-silver-bright); }
+  .text-silver-muted { color: var(--color-silver-muted); }
+  .text-silver-dim { color: var(--color-silver-dim); }
+  .text-silver-dark { color: var(--color-silver-dark); }
+  .text-silver-shadow { color: var(--color-silver-shadow); }
+  
+  /* Black/gray text colors */
+  .text-pure-black { color: var(--color-pure-black); }
+  .text-charcoal { color: var(--color-charcoal); }
+  .text-graphite { color: var(--color-graphite); }
+  .text-slate-dark { color: var(--color-slate-dark); }
+  .text-steel-dark { color: var(--color-steel-dark); }
+  .text-iron-dark { color: var(--color-iron-dark); }
+  
+  /* Silver accent text colors */
+  .text-silver-accent { color: var(--color-silver-accent); }
+  .text-silver-accent-light { color: var(--color-silver-accent-light); }
+  .text-silver-accent-dark { color: var(--color-silver-accent-dark); }
+  .text-platinum { color: var(--color-platinum); }
+  .text-pewter { color: var(--color-pewter); }
+  .text-chrome { color: var(--color-chrome); }
+  
+  /* Border colors */
+  .border-pure-black { border-color: var(--color-pure-black); }
+  .border-charcoal { border-color: var(--color-charcoal); }
+  .border-graphite { border-color: var(--color-graphite); }
+  .border-slate-dark { border-color: var(--color-slate-dark); }
+  .border-steel-dark { border-color: var(--color-steel-dark); }
+  .border-iron-dark { border-color: var(--color-iron-dark); }
+  
+  .border-silver-accent { border-color: var(--color-silver-accent); }
+  .border-silver-accent-light { border-color: var(--color-silver-accent-light); }
+  .border-silver-accent-dark { border-color: var(--color-silver-accent-dark); }
+  .border-platinum { border-color: var(--color-platinum); }
+  .border-pewter { border-color: var(--color-pewter); }
+  .border-chrome { border-color: var(--color-chrome); }
+  
+  .border-silver-bright { border-color: var(--color-silver-bright); }
+  .border-silver-muted { border-color: var(--color-silver-muted); }
+  .border-silver-dim { border-color: var(--color-silver-dim); }
+  .border-silver-dark { border-color: var(--color-silver-dark); }
+  .border-silver-shadow { border-color: var(--color-silver-shadow); }
+}

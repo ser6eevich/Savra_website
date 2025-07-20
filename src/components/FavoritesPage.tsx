@@ -1,15 +1,8 @@
 import React from 'react';
 import { Button } from './ui/button';
 import { Heart, ShoppingBag, ArrowLeft } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-}
+import { ImageWithFallback } from './ImageWithFallback';
+import type { Product } from '../types';
 
 interface FavoritesPageProps {
   favorites: string[];
@@ -22,24 +15,27 @@ interface FavoritesPageProps {
 const favoriteProducts: Record<string, Product> = {
   '1': {
     id: '1',
-    name: 'Erosion Ring',
-    description: 'Sterling silver with weathered texture',
-    price: 145,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80'
+    name: 'Кольцо Эрозии',
+    description: 'Серебро с выветренной текстурой',
+    price: 10250,
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings'
   },
   '2': {
     id: '2',
-    name: 'Fractured Pendant',
-    description: 'Oxidized silver with crack pattern',
-    price: 180,
-    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80'
+    name: 'Кольцо Трещин',
+    description: 'Окисленное серебро с узором трещин',
+    price: 11400,
+    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings'
   },
   '3': {
     id: '3',
-    name: 'Stone Texture Earrings',
-    description: 'Hammered silver with patina finish',
-    price: 120,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80'
+    name: 'Кольцо Патины',
+    description: 'Молотое серебро с патиной',
+    price: 12300,
+    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings'
   }
 };
 
@@ -51,18 +47,18 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="mb-8 text-obsidian">Your Favorites</h1>
-            <div className="bg-stone-light rounded-lg p-12 stone-texture">
-              <Heart className="w-16 h-16 text-stone-medium mx-auto mb-6" />
-              <h2 className="mb-4 text-charcoal">No favorites yet</h2>
-              <p className="text-stone-dark mb-8">
-                Start browsing our collection and save the pieces you love.
+            <h1 className="mb-8 text-silver-bright">Избранное</h1>
+            <div className="bg-graphite rounded-lg p-12 border border-slate-dark">
+              <Heart className="w-16 h-16 text-silver-accent mx-auto mb-6" />
+              <h2 className="mb-4 text-silver-muted">Пока нет избранных товаров</h2>
+              <p className="text-silver-dim mb-8">
+                Начните просматривать нашу коллекцию и сохраняйте понравившиеся изделия.
               </p>
               <Button
                 onClick={() => onNavigate('catalog')}
-                className="bg-obsidian hover:bg-charcoal text-white px-8 py-3 tracking-wide"
+                className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright px-8 py-3 tracking-wide"
               >
-                EXPLORE COLLECTION
+                ИЗУЧИТЬ КОЛЛЕКЦИЮ
               </Button>
             </div>
           </div>
@@ -79,19 +75,19 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
           <Button
             variant="ghost"
             onClick={() => onNavigate('catalog')}
-            className="p-2 hover:bg-stone-light mr-4"
+            className="p-2 hover:bg-graphite mr-4 text-silver-dim hover:text-silver-accent-light"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Continue Shopping
+            Продолжить покупки
           </Button>
-          <h1 className="text-obsidian">Your Favorites ({favoriteItems.length})</h1>
+          <h1 className="text-silver-bright">Избранное ({favoriteItems.length})</h1>
         </div>
 
         {/* Favorites Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {favoriteItems.map((product) => (
             <div key={product.id} className="group">
-              <div className="relative aspect-square bg-white rounded-lg overflow-hidden mb-4 crack-overlay">
+              <div className="relative aspect-square bg-graphite rounded-lg overflow-hidden mb-4 border border-slate-dark">
                 <ImageWithFallback
                   src={product.image}
                   alt={product.name}
@@ -122,28 +118,28 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
               
               <div className="space-y-2">
                 <h3 
-                  className="text-obsidian cursor-pointer hover:text-charcoal transition-colors"
+                  className="text-silver-bright cursor-pointer hover:text-chrome transition-colors"
                   onClick={() => onNavigate('product', product.id)}
                 >
                   {product.name}
                 </h3>
-                <p className="text-sm text-charcoal">{product.description}</p>
-                <p className="text-obsidian tracking-wide">${product.price}</p>
+                <p className="text-sm text-silver-dim">{product.description}</p>
+                <p className="text-chrome tracking-wide">₽{product.price.toLocaleString()}</p>
               </div>
               
               {/* Quick Actions */}
               <div className="mt-4 flex space-x-2">
                 <Button
                   onClick={() => onAddToCart(product)}
-                  className="flex-1 bg-obsidian hover:bg-charcoal text-white py-2 text-sm tracking-wide"
+                  className="flex-1 bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-2 text-sm tracking-wide"
                 >
                   <ShoppingBag className="w-3 h-3 mr-2" />
-                  ADD TO CART
+                  В КОРЗИНУ
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => onRemoveFavorite(product.id)}
-                  className="px-3 py-2 border-stone-medium text-stone-dark hover:bg-stone-light hover:text-destructive"
+                  className="px-3 py-2 border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-destructive"
                 >
                   <Heart className="w-3 h-3 fill-current" />
                 </Button>
@@ -159,33 +155,33 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
               favoriteItems.forEach(product => onAddToCart(product));
             }}
             variant="outline"
-            className="border-charcoal text-charcoal hover:bg-charcoal hover:text-white px-8 py-3 tracking-wide mr-4"
+            className="border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright px-8 py-3 tracking-wide mr-4"
           >
-            ADD ALL TO CART
+            ДОБАВИТЬ ВСЁ В КОРЗИНУ
           </Button>
           <Button
             onClick={() => onNavigate('catalog')}
-            className="bg-obsidian hover:bg-charcoal text-white px-8 py-3 tracking-wide"
+            className="bg-silver-accent hover:bg-silver-accent-light text-silver-bright px-8 py-3 tracking-wide"
           >
-            CONTINUE SHOPPING
+            ПРОДОЛЖИТЬ ПОКУПКИ
           </Button>
         </div>
 
         {/* Recommendations */}
         <section className="mt-20">
-          <h2 className="mb-8 text-center text-obsidian">You Might Also Like</h2>
+          <h2 className="mb-8 text-center text-silver-bright">Вам Может Понравиться</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((index) => (
               <div key={index} className="group cursor-pointer" onClick={() => onNavigate('catalog')}>
-                <div className="aspect-square bg-white rounded-lg overflow-hidden mb-4 crack-overlay">
+                <div className="aspect-square bg-graphite rounded-lg overflow-hidden mb-4 border border-slate-dark">
                   <ImageWithFallback
                     src={`https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80`}
-                    alt={`Recommended product ${index}`}
+                    alt={`Рекомендуемый товар ${index}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="mb-2 text-obsidian">Recommended Ring {index}</h3>
-                <p className="text-charcoal">$165</p>
+                <h3 className="mb-2 text-silver-bright">Рекомендуемое Кольцо {index}</h3>
+                <p className="text-chrome">₽9,500</p>
               </div>
             ))}
           </div>

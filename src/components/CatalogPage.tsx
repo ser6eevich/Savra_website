@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Heart, ShoppingBag } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  type: 'classic' | 'textured' | 'mens' | 'classic_mens' | 'textured_mens';
-}
+import { ImageWithFallback } from './ImageWithFallback';
+import type { Product } from '../types';
 
 interface CatalogPageProps {
   onNavigate: (page: string, productId?: string) => void;
@@ -58,44 +49,7 @@ const rings: Product[] = [
     category: 'rings',
     type: 'classic'
   },
-  {
-    id: '5',
-    name: 'Кольцо Утончение',
-    description: 'Деликатное серебро с матовой поверхностью',
-    price: 8100,
-    image: 'https://images.unsplash.com/photo-1596944946645-d9fcfd2b7684?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '6',
-    name: 'Кольцо Софт',
-    description: 'Мягкие формы в классическом серебре',
-    price: 7500,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '7',
-    name: 'Кольцо Люкс',
-    description: 'Премиальное серебро высокого качества',
-    price: 12500,
-    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '8',
-    name: 'Кольцо Идеал',
-    description: 'Совершенные пропорции в серебре',
-    price: 9800,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-
-  // Textured Rings (9-16)
+  // Textured Rings (9-12)
   {
     id: '9',
     name: 'Кольцо Эрозии',
@@ -131,118 +85,6 @@ const rings: Product[] = [
     image: 'https://images.unsplash.com/photo-1596944946645-d9fcfd2b7684?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
     category: 'rings',
     type: 'textured'
-  },
-  {
-    id: '13',
-    name: 'Кольцо Волн',
-    description: 'Рельеф морских волн на серебре',
-    price: 11700,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '14',
-    name: 'Кольцо Молота',
-    description: 'Молотая текстура ручной работы',
-    price: 13200,
-    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '15',
-    name: 'Кольцо Пламени',
-    description: 'Огненная текстура в темном серебре',
-    price: 14500,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '16',
-    name: 'Кольцо Вулкана',
-    description: 'Лавовая текстура с окислением',
-    price: 15800,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-
-  // Men's Sizes - Classic (17-20)
-  {
-    id: '17',
-    name: 'Кольцо Силы',
-    description: 'Широкое классическое серебро для мужчин',
-    price: 15200,
-    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic_mens'
-  },
-  {
-    id: '18',
-    name: 'Кольцо Авторитет',
-    description: 'Массивное серебро с полированной поверхностью',
-    price: 18500,
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic_mens'
-  },
-  {
-    id: '19',
-    name: 'Кольцо Лидер',
-    description: 'Представительное серебро строгих форм',
-    price: 16800,
-    image: 'https://images.unsplash.com/photo-1596944946645-d9fcfd2b7684?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic_mens'
-  },
-  {
-    id: '20',
-    name: 'Кольцо Статус',
-    description: 'Элегантное мужское серебро премиум класса',
-    price: 22000,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic_mens'
-  },
-
-  // Men's Sizes - Textured (21-24)
-  {
-    id: '21',
-    name: 'Кольцо Воин',
-    description: 'Боевая текстура на широком серебре',
-    price: 19200,
-    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured_mens'
-  },
-  {
-    id: '22',
-    name: 'Кольцо Титан',
-    description: 'Металлическая текстура с патиной',
-    price: 21500,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured_mens'
-  },
-  {
-    id: '23',
-    name: 'Кольцо Шторм',
-    description: 'Бурная текстура темного серебра',
-    price: 20800,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured_mens'
-  },
-  {
-    id: '24',
-    name: 'Кольцо Гром',
-    description: 'Молниеносная текстура на массивном серебре',
-    price: 24000,
-    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured_mens'
   }
 ];
 
@@ -279,7 +121,7 @@ export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorit
         <div className="text-center mb-12">
           <h1 className="mb-4 text-silver-bright">Коллекция Колец</h1>
           <p className="text-silver-dim max-w-2xl mx-auto">
-            Исследуйте нашу полную коллекцию из 24 уникальных серебряных колец ручной работы. 
+            Исследуйте нашу коллекцию уникальных серебряных колец ручной работы. 
             Каждое кольцо создано с особым вниманием к деталям и вдохновлено природными текстурами.
           </p>
         </div>

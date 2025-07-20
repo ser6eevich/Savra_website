@@ -50,10 +50,3 @@ export type PageType =
   | 'favorites' 
   | 'register' 
   | '404';
-
-export interface AppState {
-  currentPage: PageType;
-  selectedProductId: string;
-  cartItems: CartItem[];
-  favorites: string[];
-}

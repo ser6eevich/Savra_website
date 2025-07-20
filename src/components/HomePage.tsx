@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './ImageWithFallback';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
