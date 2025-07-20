@@ -29,8 +29,40 @@ export interface User {
   email: string;
   phone?: string;
   dateOfBirth?: string;
+  avatar?: string;
+  isAdmin?: boolean;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  total: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: Date;
+  updatedAt: Date;
+  promoCode?: string;
+  discount?: number;
+}
+
+export interface PromoCode {
+  id: string;
+  code: string;
+  discount: number;
+  isActive: boolean;
+  createdAt: Date;
+  usageCount: number;
+  maxUsage?: number;
+}
+
+export interface AdminStats {
+  totalOrders: number;
+  totalRevenue: number;
+  totalProducts: number;
+  totalUsers: number;
+  recentOrders: Order[];
 }
 
 export interface NavigationProps {
@@ -49,4 +81,7 @@ export type PageType =
   | 'cart' 
   | 'favorites' 
   | 'register' 
+  | 'profile'
+  | 'constructor'
+  | 'admin'
   | '404';

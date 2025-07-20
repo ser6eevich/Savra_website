@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShoppingBag, Menu } from 'lucide-react';
+import { Heart, ShoppingBag, Menu, User, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface HeaderProps {
@@ -7,23 +7,36 @@ interface HeaderProps {
   onNavigate: (page: string) => void;
   cartItemCount: number;
   favoritesCount: number;
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+  onOpenAuth: () => void;
+  onLogout: () => void;
 }
 
-export function Header({ currentPage, onNavigate, cartItemCount, favoritesCount }: HeaderProps) {
+export function Header({ 
+  currentPage, 
+  onNavigate, 
+  cartItemCount, 
+  favoritesCount, 
+  isLoggedIn, 
+  isAdmin, 
+  onOpenAuth, 
+  onLogout 
+}: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-graphite">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <button
+          <div
             onClick={() => onNavigate('home')}
-            className="flex items-center hover:opacity-80 transition-opacity group"
+            className="flex items-center select-none pointer-events-none group"
           >
-            <span className="text-xl tracking-wider text-silver-bright group-hover:text-chrome transition-colors">SAVRA</span>
-          </button>
+            <span className="text-xl tracking-wider text-silver-bright">SAVRA</span>
+          </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center justify-center space-x-8 flex-1">
             <button
               onClick={() => onNavigate('home')}
               className={`tracking-wide transition-colors hover:text-silver-accent-light ${
@@ -41,6 +54,14 @@ export function Header({ currentPage, onNavigate, cartItemCount, favoritesCount 
               КАТАЛОГ
             </button>
             <button
+              onClick={() => onNavigate('constructor')}
+              className={`tracking-wide transition-colors hover:text-silver-accent-light ${
+                currentPage === 'constructor' ? 'text-chrome' : 'text-silver-dim'
+              }`}
+            >
+              КОНСТРУКТОР
+            </button>
+            <button
               onClick={() => onNavigate('about')}
               className={`tracking-wide transition-colors hover:text-silver-accent-light ${
                 currentPage === 'about' ? 'text-chrome' : 'text-silver-dim'
@@ -52,6 +73,17 @@ export function Header({ currentPage, onNavigate, cartItemCount, favoritesCount 
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
+            {isAdmin && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onNavigate('admin')}
+                className="relative p-2 hover:bg-graphite text-silver-dim hover:text-silver-accent-light"
+              >
+                <Settings className="w-5 h-5" />
+              </Button>
+            )}
+            
             <Button
               variant="ghost"
               size="sm"
@@ -80,14 +112,35 @@ export function Header({ currentPage, onNavigate, cartItemCount, favoritesCount 
               )}
             </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onNavigate('register')}
-              className="hidden sm:inline-flex border-steel-dark text-silver-dim hover:bg-silver-accent hover:text-silver-bright transition-colors"
-            >
-              РЕГИСТРАЦИЯ
-            </Button>
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigate('profile')}
+                  className="p-2 hover:bg-graphite text-silver-dim hover:text-silver-accent-light"
+                >
+                  <User className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onLogout}
+                  className="hidden sm:inline-flex border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright transition-colors"
+                >
+                  ВЫЙТИ
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onOpenAuth}
+                className="hidden sm:inline-flex border-steel-dark text-silver-dim hover:bg-silver-accent hover:text-silver-bright transition-colors"
+              >
+                ВОЙТИ
+              </Button>
+            )}
 
             <Button
               variant="ghost"

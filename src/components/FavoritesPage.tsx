@@ -5,44 +5,14 @@ import { ImageWithFallback } from './ImageWithFallback';
 import type { Product } from '../types';
 
 interface FavoritesPageProps {
-  favorites: string[];
+  favorites: Product[];
   onNavigate: (page: string, productId?: string) => void;
   onRemoveFavorite: (productId: string) => void;
   onAddToCart: (product: Product) => void;
 }
 
-// Mock favorite products data
-const favoriteProducts: Record<string, Product> = {
-  '1': {
-    id: '1',
-    name: 'Кольцо Эрозии',
-    description: 'Серебро с выветренной текстурой',
-    price: 10250,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings'
-  },
-  '2': {
-    id: '2',
-    name: 'Кольцо Трещин',
-    description: 'Окисленное серебро с узором трещин',
-    price: 11400,
-    image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings'
-  },
-  '3': {
-    id: '3',
-    name: 'Кольцо Патины',
-    description: 'Молотое серебро с патиной',
-    price: 12300,
-    image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings'
-  }
-};
-
 export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddToCart }: FavoritesPageProps) {
-  const favoriteItems = favorites.map(id => favoriteProducts[id]).filter(Boolean);
-
-  if (favoriteItems.length === 0) {
+  if (favorites.length === 0) {
     return (
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,12 +50,12 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
             <ArrowLeft className="w-4 h-4 mr-2" />
             Продолжить покупки
           </Button>
-          <h1 className="text-silver-bright">Избранное ({favoriteItems.length})</h1>
+          <h1 className="text-silver-bright">Избранное ({favorites.length})</h1>
         </div>
 
         {/* Favorites Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {favoriteItems.map((product) => (
+          {favorites.map((product) => (
             <div key={product.id} className="group">
               <div className="relative aspect-square bg-graphite rounded-lg overflow-hidden mb-4 border border-slate-dark">
                 <ImageWithFallback
@@ -152,7 +122,7 @@ export function FavoritesPage({ favorites, onNavigate, onRemoveFavorite, onAddTo
         <div className="mt-12 text-center">
           <Button
             onClick={() => {
-              favoriteItems.forEach(product => onAddToCart(product));
+              favorites.forEach(product => onAddToCart(product));
             }}
             variant="outline"
             className="border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright px-8 py-3 tracking-wide mr-4"

@@ -9,84 +9,8 @@ interface CatalogPageProps {
   onAddToCart: (product: Product) => void;
   onToggleFavorite: (productId: string) => void;
   favorites: string[];
+  products: Product[];
 }
-
-const rings: Product[] = [
-  // Classic Rings (1-8)
-  {
-    id: '1',
-    name: 'Кольцо Классик',
-    description: 'Элегантное серебро с полированной поверхностью',
-    price: 8500,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '2',
-    name: 'Кольцо Минимал',
-    description: 'Тонкое серебряное кольцо простой формы',
-    price: 6800,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '3',
-    name: 'Кольцо Элегант',
-    description: 'Классическое серебро с глянцевой отделкой',
-    price: 9200,
-    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  {
-    id: '4',
-    name: 'Кольцо Грация',
-    description: 'Изящное серебряное кольцо с плавными линиями',
-    price: 7900,
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'classic'
-  },
-  // Textured Rings (9-12)
-  {
-    id: '9',
-    name: 'Кольцо Эрозии',
-    description: 'Серебро с выветренной текстурой камня',
-    price: 10250,
-    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '10',
-    name: 'Кольцо Трещин',
-    description: 'Серебро с узором древних разломов',
-    price: 11400,
-    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '11',
-    name: 'Кольцо Патины',
-    description: 'Окисленное серебро с темной патиной',
-    price: 12300,
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  },
-  {
-    id: '12',
-    name: 'Кольцо Коры',
-    description: 'Текстура древесной коры в серебре',
-    price: 10800,
-    image: 'https://images.unsplash.com/photo-1596944946645-d9fcfd2b7684?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-    category: 'rings',
-    type: 'textured'
-  }
-];
 
 const categoryNames = {
   all: 'Все',
@@ -95,13 +19,13 @@ const categoryNames = {
   mens: 'Мужские размеры'
 };
 
-export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorites }: CatalogPageProps) {
+export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorites, products }: CatalogPageProps) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const categories = ['all', 'classic', 'textured', 'mens'];
   
   const filteredRings = selectedCategory === 'all' 
-    ? rings 
-    : rings.filter(ring => {
+    ? products 
+    : products.filter(ring => {
         switch (selectedCategory) {
           case 'classic':
             return ring.type === 'classic' || ring.type === 'classic_mens';
@@ -147,7 +71,7 @@ export function CatalogPage({ onNavigate, onAddToCart, onToggleFavorite, favorit
         {/* Results Counter */}
         <div className="text-center mb-8">
           <p className="text-silver-shadow">
-            Найдено {filteredRings.length} из {rings.length} моделей
+            Найдено {filteredRings.length} из {products.length} моделей
           </p>
         </div>
 

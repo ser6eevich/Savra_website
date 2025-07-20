@@ -11,6 +11,7 @@ interface CartPageProps {
   onNavigate: (page: string) => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveItem: (id: string) => void;
+  promoCodes: PromoCode[];
 }
 
 // Demo cart item for display
@@ -23,7 +24,7 @@ const demoCartItem: CartItem = {
   size: '18'
 };
 
-export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem }: CartPageProps) {
+export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem, promoCodes }: CartPageProps) {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoDiscount, setPromoDiscount] = useState(0);
@@ -37,9 +38,15 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
   const total = subtotal - discount + delivery;
 
   const handleApplyPromo = () => {
-    if (promoCode.toLowerCase() === 'savra10') {
+    const validPromo = promoCodes.find(promo => 
+      promo.code.toLowerCase() === promoCode.toLowerCase() && promo.isActive
+    );
+    
+    if (validPromo) {
       setPromoApplied(true);
-      setPromoDiscount(Math.floor(subtotal * 0.1));
+      setPromoDiscount(Math.floor(subtotal * (validPromo.discount / 100)));
+    } else {
+      alert('Промокод не найден или неактивен');
     }
   };
 

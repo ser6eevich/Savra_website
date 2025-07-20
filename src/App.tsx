@@ -6,17 +6,79 @@ import { ProductDetailPage } from './components/ProductDetailPage';
 import { AboutPage } from './components/AboutPage';
 import { CartPage } from './components/CartPage';
 import { FavoritesPage } from './components/FavoritesPage';
-import { RegisterPage } from './components/RegisterPage';
+import { ConstructorPage } from './components/ConstructorPage';
+import { AdminPage } from './components/AdminPage';
+import { ProfilePage } from './components/ProfilePage';
 import { NotFoundPage } from './components/NotFoundPage';
-import type { CartItem, Product } from './types';
+import { AuthModal } from './components/AuthModal';
+import type { CartItem, Product, User, Order, PromoCode } from './types';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>(['1', '2']); // Demo favorites
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [products, setProducts] = useState<Product[]>([
+    // Existing products from CatalogPage
+    {
+      id: '1',
+      name: 'Кольцо Классик',
+      description: 'Элегантное серебро с полированной поверхностью',
+      price: 8500,
+      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '2',
+      name: 'Кольцо Минимал',
+      description: 'Тонкое серебряное кольцо простой формы',
+      price: 6800,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '9',
+      name: 'Кольцо Эрозии',
+      description: 'Серебро с выветренной текстурой камня',
+      price: 10250,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    },
+    {
+      id: '10',
+      name: 'Кольцо Трещин',
+      description: 'Серебро с узором древних разломов',
+      price: 11400,
+      image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    }
+  ]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
+    {
+      id: '1',
+      code: 'SAVRA10',
+      discount: 10,
+      isActive: true,
+      createdAt: new Date(),
+      usageCount: 5,
+      maxUsage: 100
+    }
+  ]);
 
   const handleNavigate = (page: string, productId?: string) => {
+    // Add smooth transition effect
+    document.body.style.opacity = '0.95';
+    setTimeout(() => {
+      document.body.style.opacity = '1';
+    }, 150);
+    
     setCurrentPage(page);
     if (productId) {
       setSelectedProductId(productId);
@@ -78,8 +140,85 @@ export default function App() {
     setFavorites(prev => prev.filter(id => id !== productId));
   };
 
+  const handleLogin = (email: string, password: string) => {
+    // Mock login logic
+    const mockUser: User = {
+      id: '1',
+      firstName: 'Елена',
+      lastName: 'Савра',
+      email: email,
+      phone: '+7 (999) 123-45-67',
+      isAdmin: email === 'admin@savra.com',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    setCurrentUser(mockUser);
+  };
+
+  const handleRegister = (userData: any) => {
+    // Mock registration logic
+    const newUser: User = {
+      id: Date.now().toString(),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      phone: userData.phone,
+      isAdmin: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    setCurrentUser(newUser);
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentPage('home');
+  };
+
+  const handleUpdateUser = (userData: Partial<User>) => {
+    if (currentUser) {
+      setCurrentUser(prev => prev ? { ...prev, ...userData, updatedAt: new Date() } : null);
+    }
+  };
+
+  const handleAddProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: Date.now().toString()
+    };
+    setProducts(prev => [...prev, newProduct]);
+  };
+
+  const handleUpdateProduct = (id: string, productData: Partial<Product>) => {
+    setProducts(prev => prev.map(product => 
+      product.id === id ? { ...product, ...productData } : product
+    ));
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
+  };
+
+  const handleAddPromoCode = (promoData: Omit<PromoCode, 'id' | 'createdAt' | 'usageCount'>) => {
+    const newPromo: PromoCode = {
+      ...promoData,
+      id: Date.now().toString(),
+      createdAt: new Date(),
+      usageCount: 0
+    };
+    setPromoCodes(prev => [...prev, newPromo]);
+  };
+
+  const handleDeletePromoCode = (id: string) => {
+    setPromoCodes(prev => prev.filter(promo => promo.id !== id));
+  };
+
   const getTotalCartItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const getFavoriteProducts = () => {
+    return products.filter(product => favorites.includes(product.id));
   };
 
   const renderCurrentPage = () => {
@@ -93,6 +232,7 @@ export default function App() {
             onAddToCart={handleAddToCart}
             onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
+            products={products}
           />
         );
       case 'product':
@@ -103,6 +243,15 @@ export default function App() {
             onAddToCart={handleAddToCart}
             onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
+            products={products}
+          />
+        );
+      case 'constructor':
+        return (
+          <ConstructorPage
+            onNavigate={handleNavigate}
+            onAddToCart={handleAddToCart}
+            products={products}
           />
         );
       case 'about':
@@ -114,19 +263,44 @@ export default function App() {
             onNavigate={handleNavigate}
             onUpdateQuantity={handleUpdateCartQuantity}
             onRemoveItem={handleRemoveFromCart}
+            promoCodes={promoCodes}
           />
         );
       case 'favorites':
         return (
           <FavoritesPage
-            favorites={favorites}
+            favorites={getFavoriteProducts()}
             onNavigate={handleNavigate}
             onRemoveFavorite={handleRemoveFavorite}
             onAddToCart={handleAddToCart}
           />
         );
-      case 'register':
-        return <RegisterPage onNavigate={handleNavigate} />;
+      case 'profile':
+        return currentUser ? (
+          <ProfilePage
+            user={currentUser}
+            orders={orders}
+            favoriteProducts={getFavoriteProducts()}
+            onUpdateUser={handleUpdateUser}
+            onNavigate={handleNavigate}
+          />
+        ) : (
+          <NotFoundPage onNavigate={handleNavigate} />
+        );
+      case 'admin':
+        return currentUser?.isAdmin ? (
+          <AdminPage
+            products={products}
+            onAddProduct={handleAddProduct}
+            onUpdateProduct={handleUpdateProduct}
+            onDeleteProduct={handleDeleteProduct}
+            promoCodes={promoCodes}
+            onAddPromoCode={handleAddPromoCode}
+            onDeletePromoCode={handleDeletePromoCode}
+          />
+        ) : (
+          <NotFoundPage onNavigate={handleNavigate} />
+        );
       case '404':
         return <NotFoundPage onNavigate={handleNavigate} />;
       default:
@@ -135,16 +309,28 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background transition-opacity duration-300">
       <Header
         currentPage={currentPage}
         onNavigate={handleNavigate}
         cartItemCount={getTotalCartItems()}
         favoritesCount={favorites.length}
+        isLoggedIn={!!currentUser}
+        isAdmin={!!currentUser?.isAdmin}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+        onLogout={handleLogout}
       />
       <main>
         {renderCurrentPage()}
       </main>
+      
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLogin={handleLogin}
+        onRegister={handleRegister}
+      />
+      
       <footer className="bg-pure-black text-silver-muted py-12 mt-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -158,8 +344,8 @@ export default function App() {
               <h4 className="mb-4 text-silver-muted">Магазин</h4>
               <div className="space-y-2 text-sm text-silver-dim">
                 <button onClick={() => handleNavigate('catalog')} className="block hover:text-silver-accent-light transition-colors">Кольца</button>
+                <button onClick={() => handleNavigate('constructor')} className="block hover:text-silver-accent-light transition-colors">Конструктор</button>
                 <button onClick={() => handleNavigate('about')} className="block hover:text-silver-accent-light transition-colors">О нас</button>
-                <button onClick={() => handleNavigate('register')} className="block hover:text-silver-accent-light transition-colors">Регистрация</button>
               </div>
             </div>
             <div>
@@ -175,7 +361,6 @@ export default function App() {
               <h4 className="mb-4 text-silver-muted">Связь</h4>
               <div className="space-y-2 text-sm text-silver-dim">
                 <button className="block hover:text-silver-accent-light transition-colors">Instagram</button>
-                <button className="block hover:text-silver-accent-light transition-colors">YouTube</button>
                 <button className="block hover:text-silver-accent-light transition-colors">Telegram</button>
                 <button className="block hover:text-silver-accent-light transition-colors">WhatsApp</button>
               </div>

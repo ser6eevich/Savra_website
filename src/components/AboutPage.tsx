@@ -123,12 +123,6 @@ export function AboutPage() {
                 variant="outline"
                 className="border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright p-4 rounded-full transition-all duration-300"
               >
-                <Youtube className="w-6 h-6" />
-              </Button>
-              <Button
-                variant="outline"
-                className="border-steel-dark text-silver-dim hover:bg-steel-dark hover:text-silver-bright p-4 rounded-full transition-all duration-300"
-              >
                 <Send className="w-6 h-6" />
               </Button>
               <Button
@@ -139,14 +133,10 @@ export function AboutPage() {
               </Button>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-silver-shadow">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-silver-shadow">
               <div>
                 <p className="mb-1">@savra_jewelry</p>
                 <p>Instagram</p>
-              </div>
-              <div>
-                <p className="mb-1">Savra Jewelry</p>
-                <p>YouTube</p>
               </div>
               <div>
                 <p className="mb-1">@savra_jewelry</p>
