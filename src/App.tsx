@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
-import { productApi, authApi } from './lib/api';
+import { productApi, authApi, userApi } from './lib/api';
 import { adaptSupabaseProduct, adaptSupabaseUser } from './lib/adapters';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
