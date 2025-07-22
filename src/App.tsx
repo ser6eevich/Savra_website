@@ -11,12 +11,65 @@ import { AdminPage } from './components/AdminPage';
 import { ProfilePage } from './components/ProfilePage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { AuthModal } from './components/AuthModal';
-import { useAuth } from './hooks/useAuth';
-import { useProducts } from './hooks/useProducts';
-import { useFavorites } from './hooks/useFavorites';
-import { useOrders } from './hooks/useOrders';
-import { usePromoCodes } from './hooks/usePromoCodes';
 import type { CartItem, Product } from './types';
+
+// Mock data for development
+const mockProducts: Product[] = [
+  {
+    id: '1',
+    name: 'Кольцо Трещин',
+    description: 'Серебряное кольцо с текстурой естественных трещин',
+    detailedDescription: 'Уникальное серебряное кольцо, вдохновленное природными процессами выветривания. Каждая трещина и неровность создана вручную, отражая философию ваби-саби.',
+    price: 8500,
+    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings',
+    collection: 'Эрозия',
+    article: 'ER-001',
+    material: 'Серебро 925°',
+    type: 'classic',
+    sizes: ['15', '16', '17', '18', '19', '20', '21']
+  },
+  {
+    id: '2',
+    name: 'Кольцо Выветривания',
+    description: 'Текстурированное кольцо с патиной времени',
+    detailedDescription: 'Изделие создано с использованием специальных техник патинирования, имитирующих естественное старение металла под воздействием времени и стихий.',
+    price: 9200,
+    image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings',
+    collection: 'Время',
+    article: 'TM-002',
+    material: 'Серебро 925°',
+    type: 'textured',
+    sizes: ['16', '17', '18', '19', '20', '21', '22']
+  },
+  {
+    id: '3',
+    name: 'Кольцо Камня',
+    description: 'Массивное кольцо в стиле необработанного камня',
+    detailedDescription: 'Вдохновленное формами речных камней, это кольцо передает ощущение природной силы и устойчивости. Подходит для повседневной носки.',
+    price: 7800,
+    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+    category: 'rings',
+    collection: 'Камень',
+    article: 'ST-003',
+    material: 'Серебро 925°',
+    type: 'classic_mens',
+    sizes: ['18', '19', '20', '21', '22', '23', '24']
+  }
+];
+
+const mockPromoCodes = [
+  {
+    id: '1',
+    code: 'SAVRA10',
+    discount: 10,
+    isActive: true,
+    usageCount: 5,
+    maxUsage: 100,
+    createdAt: new Date()
+  }
+];
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -24,13 +77,25 @@ export default function App() {
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<'client' | 'admin'>('client');
 
-  // Supabase hooks
-  const { user, loading: authLoading, signUp, signIn, signOut, updateProfile } = useAuth();
-  const { products, loading: productsLoading, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { favorites, toggleFavorite, removeFavorite } = useFavorites(user?.id || null);
-  const { orders, createOrder } = useOrders(user?.id || null);
-  const { promoCodes, addPromoCode, deletePromoCode, validatePromoCode } = usePromoCodes();
+  // Mock user data
+  const mockUser = {
+    id: '1',
+    firstName: 'Елена',
+    lastName: 'Савра',
+    email: 'elena@savra.com',
+    phone: '+7 (999) 123-45-67',
+    dateOfBirth: '1990-01-01',
+    avatar: undefined,
+    role: userRole,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+
+  const mockOrders = [];
 
   const handleNavigate = (page: string, productId?: string) => {
     setIsTransitioning(true);
@@ -95,7 +160,11 @@ export default function App() {
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      await signIn(email, password);
+      // Mock login
+      setIsLoggedIn(true);
+      if (email === 'admin@savra.com') {
+        setUserRole('admin');
+      }
       setIsAuthModalOpen(false);
     } catch (error) {
       console.error('Login error:', error);
@@ -111,13 +180,10 @@ export default function App() {
     password: string;
   }) => {
     try {
-      await signUp(userData.email, userData.password, {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phone: userData.phone
-      });
+      // Mock registration
+      setIsLoggedIn(true);
       setIsAuthModalOpen(false);
-      alert('Регистрация успешна! Проверьте email для подтверждения.');
+      alert('Регистрация успешна!');
     } catch (error) {
       console.error('Registration error:', error);
       alert('Ошибка регистрации. Попробуйте еще раз.');
@@ -126,7 +192,8 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
-      await signOut();
+      setIsLoggedIn(false);
+      setUserRole('client');
       setCurrentPage('home');
       setCartItems([]);
     } catch (error) {
@@ -141,13 +208,13 @@ export default function App() {
     promoCode?: string;
     discount?: number;
   }) => {
-    if (!user) {
+    if (!isLoggedIn) {
       setIsAuthModalOpen(true);
       return;
     }
 
     try {
-      await createOrder(orderData);
+      // Mock order creation
       setCartItems([]);
       alert('Заказ успешно создан!');
     } catch (error) {
@@ -160,22 +227,28 @@ export default function App() {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
 
+  const handleToggleFavorite = (productId: string) => {
+    setFavorites(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleRemoveFavorite = (productId: string) => {
+    setFavorites(prev => prev.filter(id => id !== productId));
+  };
+
   const getFavoriteProducts = () => {
-    return products.filter(product => favorites.includes(product.id));
+    return mockProducts.filter(product => favorites.includes(product.id));
+  };
+
+  const validatePromoCode = async (code: string) => {
+    const promo = mockPromoCodes.find(p => p.code === code.toUpperCase() && p.isActive);
+    return promo || null;
   };
 
   const renderCurrentPage = () => {
-    if (authLoading) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="w-8 h-8 border-2 border-silver-accent border-t-transparent rounded-full animate-spin"></div>
-            <div className="text-silver-dim">Загрузка...</div>
-          </div>
-        </div>
-      );
-    }
-
     switch (currentPage) {
       case 'home':
         return <HomePage onNavigate={handleNavigate} />;
@@ -184,9 +257,9 @@ export default function App() {
           <CatalogPage
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
-            products={products}
+            products={mockProducts}
           />
         );
       case 'product':
@@ -195,9 +268,9 @@ export default function App() {
             productId={selectedProductId}
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
-            products={products}
+            products={mockProducts}
           />
         );
       case 'constructor':
@@ -205,7 +278,7 @@ export default function App() {
           <ConstructorPage
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
-            products={products}
+            products={mockProducts}
           />
         );
       case 'about':
@@ -218,7 +291,7 @@ export default function App() {
             onUpdateQuantity={handleUpdateCartQuantity}
             onRemoveItem={handleRemoveFromCart}
             onClearCart={handleClearCart}
-            promoCodes={promoCodes}
+            promoCodes={mockPromoCodes}
             onCreateOrder={handleCreateOrder}
             validatePromoCode={validatePromoCode}
           />
@@ -228,32 +301,32 @@ export default function App() {
           <FavoritesPage
             favorites={getFavoriteProducts()}
             onNavigate={handleNavigate}
-            onRemoveFavorite={removeFavorite}
+            onRemoveFavorite={handleRemoveFavorite}
             onAddToCart={handleAddToCart}
           />
         );
       case 'profile':
-        return user ? (
+        return isLoggedIn ? (
           <ProfilePage
-            user={user}
-            orders={orders}
+            user={mockUser}
+            orders={mockOrders}
             favoriteProducts={getFavoriteProducts()}
-            onUpdateUser={updateProfile}
+            onUpdateUser={() => {}}
             onNavigate={handleNavigate}
           />
         ) : (
           <NotFoundPage onNavigate={handleNavigate} />
         );
       case 'admin':
-        return user?.role === 'admin' ? (
+        return userRole === 'admin' ? (
           <AdminPage
-            products={products}
-            onAddProduct={addProduct}
-            onUpdateProduct={updateProduct}
-            onDeleteProduct={deleteProduct}
-            promoCodes={promoCodes}
-            onAddPromoCode={addPromoCode}
-            onDeletePromoCode={deletePromoCode}
+            products={mockProducts}
+            onAddProduct={() => {}}
+            onUpdateProduct={() => {}}
+            onDeleteProduct={() => {}}
+            promoCodes={mockPromoCodes}
+            onAddPromoCode={() => {}}
+            onDeletePromoCode={() => {}}
           />
         ) : (
           <NotFoundPage onNavigate={handleNavigate} />
@@ -272,8 +345,8 @@ export default function App() {
         onNavigate={handleNavigate}
         cartItemCount={getTotalCartItems()}
         favoritesCount={favorites.length}
-        isLoggedIn={!!user}
-        userRole={user?.role || 'client'}
+        isLoggedIn={isLoggedIn}
+        userRole={userRole}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onLogout={handleLogout}
       />
