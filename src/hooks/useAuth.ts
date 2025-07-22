@@ -48,11 +48,16 @@ export function useAuth() {
         .single()
 
       if (error) {
-        console.error('Error loading profile:', error)
+        if (error.code !== 'PGRST116') { // Ignore "not found" errors
+          console.error('Error loading profile:', error)
+        }
         return
       }
 
       if (data) {
+        // Get user email from auth
+        const { data: { user } } = await supabase.auth.getUser()
+        
         const appUser: AppUser = {
           id: data.id,
           firstName: data.first_name || '',
