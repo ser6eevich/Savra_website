@@ -112,7 +112,6 @@ export default function App() {
       setIsAuthModalOpen(false)
     } catch (error) {
       console.error('Login error:', error)
-      alert(`Ошибка входа: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
       throw error
     }
   }
@@ -127,10 +126,8 @@ export default function App() {
     try {
       await register(userData)
       setIsAuthModalOpen(false)
-      alert('Регистрация успешна! Проверьте email для подтверждения.')
     } catch (error) {
       console.error('Registration error:', error)
-      alert(`Ошибка регистрации: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`)
       throw error
     }
   }

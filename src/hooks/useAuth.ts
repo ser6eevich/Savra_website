@@ -120,6 +120,7 @@ export function useAuth() {
         email: userData.email,
         password: userData.password,
         options: {
+          emailRedirectTo: undefined, // Отключаем подтверждение email для тестирования
           data: {
             first_name: userData.firstName,
             last_name: userData.lastName,
@@ -131,6 +132,11 @@ export function useAuth() {
 
       if (error) {
         throw new Error(error.message)
+      }
+
+      // Для тестирования сразу загружаем профиль
+      if (data.user) {
+        await loadUserProfile(data.user)
       }
 
       return data

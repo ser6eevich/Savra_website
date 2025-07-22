@@ -4,7 +4,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Checkbox } from './ui/checkbox'
 import { Modal } from './ui/modal'
-import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2, AlertCircle } from 'lucide-react'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -18,6 +18,7 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
   const [showPassword, setShowPassword] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,8 +30,10 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    setError('')
+    
     if (!isLoginMode && !agreedToTerms) {
-      alert('Необходимо согласиться с обработкой персональных данных')
+      setError('Необходимо согласиться с обработкой персональных данных')
       return
     }
     
@@ -45,12 +48,34 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
       // Модальное окно закроется автоматически в родительском компоненте
     } catch (error) {
       setIsLoading(false)
-      // Ошибка обработана в родительском компоненте
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Неверный email или пароль. Проверьте данные или зарегистрируйтесь.')
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Подтвердите email адрес, проверив почту.')
+        } else if (error.message.includes('User already registered')) {
+          setError('Пользователь с таким email уже существует.')
+        } else {
+          setError(error.message)
+        }
+      }
     }
   }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+    if (error) setError('') // Очищаем ошибку при изменении данных
+  }
+
+  const fillTestCredentials = () => {
+    setFormData({
+      email: 'test@savra.com',
+      password: 'test123456',
+      firstName: 'Тест',
+      lastName: 'Пользователь',
+      phone: '+7 (999) 123-45-67'
+    })
+    setError('')
   }
 
   return (
@@ -61,6 +86,28 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
       className="max-w-md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="flex items-center space-x-2 p-3 bg-red-900/20 border border-red-800 rounded-lg">
+            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <p className="text-sm text-red-300">{error}</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-silver-dim">
+            {isLoginMode ? 'Нет аккаунта?' : 'Есть аккаунт?'}
+          </p>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={fillTestCredentials}
+            className="text-xs text-silver-accent hover:text-chrome"
+          >
+            Заполнить тестовые данные
+          </Button>
+        </div>
+
         {!isLoginMode && (
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
