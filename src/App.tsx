@@ -50,19 +50,33 @@ export default function App() {
     try {
       setLoading(true);
       
-      // Загружаем товары
-      const supabaseProducts = await productApi.getAll();
-      const adaptedProducts = supabaseProducts.map(adaptSupabaseProduct);
-      setProducts(adaptedProducts);
+      // Загружаем товары с обработкой ошибок
+      try {
+        const supabaseProducts = await productApi.getAll()
+        const adaptedProducts = supabaseProducts.map(adaptSupabaseProduct)
+        setProducts(adaptedProducts)
+      } catch (productError) {
+        console.error('Ошибка загрузки товаров:', productError)
+        // Используем демо-данные если не удалось загрузить из Supabase
+        setProducts([])
+      }
       
-      // Проверяем текущую сессию
-      const session = await authApi.getCurrentSession();
-      if (session?.user) {
-        // Загружаем данные пользователя из нашей таблицы
-        const userData = await userApi.getById(session.user.id);
-        if (userData) {
-          setCurrentUser(adaptSupabaseUser(userData));
+      // Проверяем текущую сессию с обработкой ошибок
+      try {
+        const session = await authApi.getCurrentSession()
+        if (session?.user) {
+          // Загружаем данные пользователя из нашей таблицы
+          try {
+            const userData = await userApi.getById(session.user.id)
+            if (userData) {
+              setCurrentUser(adaptSupabaseUser(userData))
+            }
+          } catch (userError) {
+            console.error('Ошибка загрузки данных пользователя:', userError)
+          }
         }
+      } catch (sessionError) {
+        console.error('Ошибка проверки сессии:', sessionError)
       }
     } catch (error) {
       console.error('Ошибка загрузки данных:', error);

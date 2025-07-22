@@ -10,7 +10,10 @@ export const userApi = {
       .eq('id', id)
       .single()
     
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error in getById user:', error)
+      if (error.code !== 'PGRST116') throw error // PGRST116 = not found
+    }
     return data
   },
 
@@ -57,7 +60,10 @@ export const productApi = {
       .select('*')
       .order('created_at', { ascending: false })
     
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error in getAll products:', error)
+      throw error
+    }
     return data || []
   },
 
@@ -196,7 +202,11 @@ export const authApi = {
   },
 
   async getCurrentSession() {
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session }, error } = await supabase.auth.getSession()
+    if (error) {
+      console.error('Supabase error in getCurrentSession:', error)
+      throw error
+    }
     return session
   }
 }
