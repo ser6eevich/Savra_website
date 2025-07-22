@@ -21,7 +21,7 @@ import type { Product, PromoCode, AdminStats } from '../types'
 
 interface AdminPageProps {
   products: Product[]
-  onAddProduct: (productData: Omit<Product, 'id'>, files: { images: File[], video?: File }) => void
+  onAddProduct: (product: Omit<Product, 'id'>) => void
   onUpdateProduct: (id: string, product: Partial<Product>) => void
   onDeleteProduct: (id: string) => void
   promoCodes: PromoCode[]
@@ -77,44 +77,20 @@ export function AdminPage({
   }
 
   // Mock customer data
-  const handleProductSubmit = async (e: React.FormEvent) => {
+  const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    try {
-      const productData = {
-        ...productForm,
-        image: productForm.images[0] || '', // Use first image as main image for compatibility
-      }
-      
-      if (editingProduct) {
-        await onUpdateProduct(editingProduct.id, productData)
-      } else {
-        // Convert base64 images to File objects for upload
-        const imageFiles: File[] = []
-        for (const [index, base64] of productForm.images.entries()) {
-          const response = await fetch(base64)
-          const blob = await response.blob()
-          const file = new File([blob], `image-${index}.jpg`, { type: 'image/jpeg' })
-          imageFiles.push(file)
-        }
-        
-        let videoFile: File | undefined
-        if (productForm.video) {
-          const response = await fetch(productForm.video)
-          const blob = await response.blob()
-          videoFile = new File([blob], 'video.mp4', { type: 'video/mp4' })
-        }
-        
-        await onAddProduct(productData, { images: imageFiles, video: videoFile })
-      }
-      
-      setIsProductModalOpen(false)
-      setEditingProduct(null)
-      resetProductForm()
-    } catch (error) {
-      console.error('Error saving product:', error)
-      alert('Ошибка сохранения товара')
+    const productData = {
+      ...productForm,
+      image: productForm.images[0] || '', // Use first image as main image for compatibility
     }
+    if (editingProduct) {
+      onUpdateProduct(editingProduct.id, productData)
+    } else {
+      onAddProduct(productData)
+    }
+    setIsProductModalOpen(false)
+    setEditingProduct(null)
+    resetProductForm()
   }
 
   const handlePromoSubmit = (e: React.FormEvent) => {

@@ -8,7 +8,7 @@ interface HeaderProps {
   cartItemCount: number;
   favoritesCount: number;
   isLoggedIn: boolean;
-  userRole: 'client' | 'admin';
+  isAdmin: boolean;
   onOpenAuth: () => void;
   onLogout: () => void;
 }
@@ -19,7 +19,7 @@ export function Header({
   cartItemCount, 
   favoritesCount, 
   isLoggedIn, 
-  userRole, 
+  isAdmin, 
   onOpenAuth, 
   onLogout 
 }: HeaderProps) {
@@ -73,7 +73,7 @@ export function Header({
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            {userRole === 'admin' && (
+            {isAdmin && (
               <Button
                 variant="ghost"
                 size="sm"

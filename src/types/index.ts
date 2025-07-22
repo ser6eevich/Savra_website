@@ -5,7 +5,6 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
-  orderType?: 'catalog' | 'constructor';
 }
 
 export interface Product {
@@ -31,7 +30,7 @@ export interface User {
   phone?: string;
   dateOfBirth?: string;
   avatar?: string;
-  role: 'client' | 'admin';
+  isAdmin?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

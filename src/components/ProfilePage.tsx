@@ -44,25 +44,12 @@ export function ProfilePage({ user, orders, favoriteProducts, onUpdateUser, onNa
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const uploadAvatar = async () => {
-        try {
-          const { supabase, uploadFile, getPublicUrl } = await import('../lib/supabase')
-          
-          const fileExt = file.name.split('.').pop()
-          const fileName = `avatar.${fileExt}`
-          const filePath = `${user.id}/${fileName}`
-          
-          await uploadFile('avatars', filePath, file)
-          const publicUrl = getPublicUrl('avatars', filePath)
-          
-          onUpdateUser({ avatar: publicUrl })
-        } catch (error) {
-          console.error('Error uploading avatar:', error)
-          alert('Ошибка загрузки аватара')
-        }
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const avatar = e.target?.result as string
+        onUpdateUser({ avatar })
       }
-      
-      uploadAvatar()
+      reader.readAsDataURL(file)
     }
   }
 
