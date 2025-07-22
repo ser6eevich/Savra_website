@@ -309,7 +309,7 @@ export default function App() {
             <p>&copy; 2025 Savra Jewelry. Все права защищены.</p>
           </div>
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
