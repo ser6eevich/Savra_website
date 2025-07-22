@@ -18,7 +18,6 @@ export function useOrders(userId: string | null) {
     if (!userId) return
 
     try {
-      setLoading(true)
       const { data, error } = await supabase
         .from('orders')
         .select('*')
@@ -43,8 +42,7 @@ export function useOrders(userId: string | null) {
       setOrders(formattedOrders)
     } catch (error) {
       console.error('Error fetching orders:', error)
-    } finally {
-      setLoading(false)
+      setOrders([])
     }
   }
 

@@ -165,10 +165,13 @@ export default function App() {
   };
 
   const renderCurrentPage = () => {
-    if (authLoading || productsLoading) {
+    if (authLoading) {
       return (
         <div className="min-h-screen flex items-center justify-center">
-          <div className="text-silver-dim">Загрузка...</div>
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-8 h-8 border-2 border-silver-accent border-t-transparent rounded-full animate-spin"></div>
+            <div className="text-silver-dim">Загрузка...</div>
+          </div>
         </div>
       );
     }

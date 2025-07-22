@@ -12,6 +12,7 @@ export function usePromoCodes() {
 
   const fetchPromoCodes = async () => {
     try {
+      setLoading(true)
       const { data, error } = await supabase
         .from('promo_codes')
         .select('*')
@@ -32,6 +33,7 @@ export function usePromoCodes() {
       setPromoCodes(formattedPromoCodes)
     } catch (error) {
       console.error('Error fetching promo codes:', error)
+      setPromoCodes([])
     } finally {
       setLoading(false)
     }

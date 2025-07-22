@@ -12,6 +12,7 @@ export function useProducts() {
 
   const fetchProducts = async () => {
     try {
+      setLoading(true)
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -38,6 +39,7 @@ export function useProducts() {
       setProducts(formattedProducts)
     } catch (error) {
       console.error('Error fetching products:', error)
+      setProducts([]) // Set empty array on error
     } finally {
       setLoading(false)
     }

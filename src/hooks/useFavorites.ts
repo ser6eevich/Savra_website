@@ -17,7 +17,6 @@ export function useFavorites(userId: string | null) {
     if (!userId) return
 
     try {
-      setLoading(true)
       const { data, error } = await supabase
         .from('favorites')
         .select('product_id')
@@ -28,8 +27,7 @@ export function useFavorites(userId: string | null) {
       setFavorites(data.map(item => item.product_id))
     } catch (error) {
       console.error('Error fetching favorites:', error)
-    } finally {
-      setLoading(false)
+      setFavorites([])
     }
   }
 
