@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Modal } from '../ui/modal'
 import { Upload, Play, X } from 'lucide-react'
 import type { Product } from '../../types'
@@ -22,7 +23,7 @@ interface ProductModalProps {
     collection: string
     article: string
     material: string
-    type: 'classic' | 'textured' | 'mens'
+    type: string
     sizes: string[]
   }
   setProductForm: React.Dispatch<React.SetStateAction<any>>
@@ -158,6 +159,71 @@ export function ProductModal({
               </Button>
             </div>
           )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="category">Категория</Label>
+            <Select value={productForm.category} onValueChange={(value) => setProductForm(prev => ({ ...prev, category: value }))}>
+              <SelectTrigger className="border-slate-dark bg-slate-dark text-silver-muted">
+                <SelectValue placeholder="Выберите категорию" />
+              </SelectTrigger>
+              <SelectContent className="bg-graphite border-slate-dark">
+                <SelectItem value="rings" className="text-silver-muted hover:bg-slate-dark">Кольца</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="type">Тип</Label>
+            <Select value={productForm.type} onValueChange={(value) => setProductForm(prev => ({ ...prev, type: value }))}>
+              <SelectTrigger className="border-slate-dark bg-slate-dark text-silver-muted">
+                <SelectValue placeholder="Выберите тип" />
+              </SelectTrigger>
+              <SelectContent className="bg-graphite border-slate-dark">
+                <SelectItem value="classic" className="text-silver-muted hover:bg-slate-dark">Классическое</SelectItem>
+                <SelectItem value="textured" className="text-silver-muted hover:bg-slate-dark">Текстурное</SelectItem>
+                <SelectItem value="classic_mens" className="text-silver-muted hover:bg-slate-dark">Классическое мужское</SelectItem>
+                <SelectItem value="textured_mens" className="text-silver-muted hover:bg-slate-dark">Текстурное мужское</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="detailedDescription">Подробное описание</Label>
+          <textarea
+            id="detailedDescription"
+            value={productForm.detailedDescription}
+            onChange={(e) => setProductForm(prev => ({ ...prev, detailedDescription: e.target.value }))}
+            className="w-full min-h-[100px] px-3 py-2 border border-slate-dark bg-slate-dark text-silver-muted rounded-md resize-vertical"
+            placeholder="Подробное описание товара..."
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="material">Материал</Label>
+            <Input
+              id="material"
+              value={productForm.material}
+              onChange={(e) => setProductForm(prev => ({ ...prev, material: e.target.value }))}
+              className="border-slate-dark bg-slate-dark text-silver-muted"
+              placeholder="Серебро 925°"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="sizes">Размеры (через запятую)</Label>
+            <Input
+              id="sizes"
+              value={productForm.sizes.join(', ')}
+              onChange={(e) => setProductForm(prev => ({ 
+                ...prev, 
+                sizes: e.target.value.split(',').map(s => s.trim()).filter(s => s) 
+              }))}
+              className="border-slate-dark bg-slate-dark text-silver-muted"
+              placeholder="15, 16, 17, 18, 19, 20, 21"
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
