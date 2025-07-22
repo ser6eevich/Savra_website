@@ -42,15 +42,10 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
       } else {
         await onRegister(formData)
       }
-      
-      // Плавное закрытие модального окна
-      setTimeout(() => {
-        onClose()
-        setIsLoading(false)
-      }, 300)
+      // Модальное окно закроется автоматически в родительском компоненте
     } catch (error) {
       setIsLoading(false)
-      // Ошибка уже обработана в родительском компоненте
+      // Ошибка обработана в родительском компоненте
     }
   }
 
