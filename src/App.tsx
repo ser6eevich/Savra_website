@@ -13,6 +13,7 @@ import { ProfilePage } from './components/ProfilePage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { AuthModal } from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
+import { isSupabaseReady } from './lib/supabase';
 import { useProducts } from './hooks/useProducts';
 import { useFavorites } from './hooks/useFavorites';
 import { useOrders } from './hooks/useOrders';
