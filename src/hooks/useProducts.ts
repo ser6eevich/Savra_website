@@ -51,7 +51,8 @@ export function useProducts() {
       // Upload images
       const imageUrls: string[] = []
       for (const [index, file] of files.images.entries()) {
-        const fileName = `${Date.now()}-${index}-${file.name}`
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Date.now()}-${index}.${fileExt}`
         await uploadFile('product-images', fileName, file)
         const publicUrl = getPublicUrl('product-images', fileName)
         imageUrls.push(publicUrl)
@@ -60,7 +61,8 @@ export function useProducts() {
       // Upload video if provided
       let videoUrl: string | null = null
       if (files.video) {
-        const videoFileName = `${Date.now()}-${files.video.name}`
+        const fileExt = files.video.name.split('.').pop()
+        const videoFileName = `${Date.now()}-video.${fileExt}`
         await uploadFile('product-videos', videoFileName, files.video)
         videoUrl = getPublicUrl('product-videos', videoFileName)
       }

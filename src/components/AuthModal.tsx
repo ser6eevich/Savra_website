@@ -4,7 +4,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { Checkbox } from './ui/checkbox'
 import { Modal } from './ui/modal'
-import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, Phone, Loader2 } from 'lucide-react'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -17,6 +17,7 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
   const [isLoginMode, setIsLoginMode] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -25,7 +26,7 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
     phone: ''
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!isLoginMode && !agreedToTerms) {
@@ -33,16 +34,24 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
       return
     }
     
-    if (isLoginMode) {
-      onLogin(formData.email, formData.password)
-    } else {
-      onRegister(formData)
-    }
+    setIsLoading(true)
     
-    // Плавное закрытие модального окна
-    setTimeout(() => {
-      onClose()
-    }, 300)
+    try {
+      if (isLoginMode) {
+        await onLogin(formData.email, formData.password)
+      } else {
+        await onRegister(formData)
+      }
+      
+      // Плавное закрытие модального окна
+      setTimeout(() => {
+        onClose()
+        setIsLoading(false)
+      }, 300)
+    } catch (error) {
+      setIsLoading(false)
+      // Ошибка уже обработана в родительском компоненте
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -171,10 +180,17 @@ export function AuthModal({ isOpen, onClose, onLogin, onRegister }: AuthModalPro
 
         <Button
           type="submit"
-          disabled={!isLoginMode && !agreedToTerms}
-          className="w-full bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={(!isLoginMode && !agreedToTerms) || isLoading}
+          className="w-full bg-silver-accent hover:bg-silver-accent-light text-silver-bright py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          {isLoginMode ? 'Войти' : 'Создать аккаунт'}
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              {isLoginMode ? 'Вход...' : 'Создание...'}
+            </>
+          ) : (
+            isLoginMode ? 'Войти' : 'Создать аккаунт'
+          )}
         </Button>
 
         <div className="text-center">

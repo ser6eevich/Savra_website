@@ -51,7 +51,7 @@ export function useAuth() {
           phone: profile.phone,
           dateOfBirth: profile.date_of_birth,
           avatar: profile.avatar_url,
-          isAdmin: profile.is_admin,
+          role: profile.role || 'client',
           createdAt: new Date(profile.created_at),
           updatedAt: new Date(profile.updated_at)
         })

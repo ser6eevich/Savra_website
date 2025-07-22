@@ -31,7 +31,7 @@ export interface User {
   phone?: string;
   dateOfBirth?: string;
   avatar?: string;
-  isAdmin?: boolean;
+  role: 'client' | 'admin';
   createdAt: Date;
   updatedAt: Date;
 }

@@ -24,15 +24,6 @@ interface CartPageProps {
   validatePromoCode: (code: string) => Promise<PromoCode | null>;
 }
 
-// Demo cart item for display
-const demoCartItem: CartItem = {
-  id: '1',
-  name: 'Кольцо Эрозии',
-  price: 10250,
-  image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
-  quantity: 1,
-  size: '18'
-};
 
 export function CartPage({ 
   cartItems, 
@@ -50,8 +41,7 @@ export function CartPage({
   const [appliedPromoCode, setAppliedPromoCode] = useState<string>('');
   const [showOrderNotification, setShowOrderNotification] = useState(false);
 
-  // Use demo item if cart is empty for display purposes
-  const displayItems = cartItems.length > 0 ? cartItems : [demoCartItem];
+  const displayItems = cartItems;
 
   const subtotal = displayItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const discount = promoApplied ? promoDiscount : 0;

@@ -18,7 +18,7 @@ export interface Database {
           phone: string | null
           date_of_birth: string | null
           avatar_url: string | null
-          is_admin: boolean
+          role: 'client' | 'admin'
           created_at: string
           updated_at: string
         }
@@ -30,7 +30,7 @@ export interface Database {
           phone?: string | null
           date_of_birth?: string | null
           avatar_url?: string | null
-          is_admin?: boolean
+          role?: 'client' | 'admin'
           created_at?: string
           updated_at?: string
         }
@@ -42,7 +42,7 @@ export interface Database {
           phone?: string | null
           date_of_birth?: string | null
           avatar_url?: string | null
-          is_admin?: boolean
+          role?: 'client' | 'admin'
           created_at?: string
           updated_at?: string
         }

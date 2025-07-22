@@ -242,7 +242,7 @@ export default function App() {
           <NotFoundPage onNavigate={handleNavigate} />
         );
       case 'admin':
-        return user?.isAdmin ? (
+        return user?.role === 'admin' ? (
           <AdminPage
             products={products}
             onAddProduct={addProduct}
@@ -270,7 +270,7 @@ export default function App() {
         cartItemCount={getTotalCartItems()}
         favoritesCount={favorites.length}
         isLoggedIn={!!user}
-        isAdmin={!!user?.isAdmin}
+        userRole={user?.role || 'client'}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onLogout={handleLogout}
       />

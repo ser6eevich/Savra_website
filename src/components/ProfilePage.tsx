@@ -44,12 +44,36 @@ export function ProfilePage({ user, orders, favoriteProducts, onUpdateUser, onNa
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const avatar = e.target?.result as string
-        onUpdateUser({ avatar })
+      // Загружаем файл в Supabase Storage
+      const uploadAvatar = async () => {
+        try {
+          const { supabase } = await import('../lib/supabase')
+          
+          // Создаем уникальное имя файла
+          const fileExt = file.name.split('.').pop()
+          const fileName = `${user.id}/avatar.${fileExt}`
+          
+          // Загружаем файл
+          const { error: uploadError } = await supabase.storage
+            .from('avatars')
+            .upload(fileName, file, { upsert: true })
+          
+          if (uploadError) throw uploadError
+          
+          // Получаем публичный URL
+          const { data } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(fileName)
+          
+          // Обновляем профиль пользователя
+          onUpdateUser({ avatar: data.publicUrl })
+        } catch (error) {
+          console.error('Error uploading avatar:', error)
+          alert('Ошибка загрузки аватара')
+        }
       }
-      reader.readAsDataURL(file)
+      
+      uploadAvatar()
     }
   }
 
