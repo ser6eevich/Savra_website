@@ -32,12 +32,6 @@ export function useAuth() {
     return () => subscription.unsubscribe()
   }, [])
 
-    
-    if (!isSupabaseReady) {
-      setError('Supabase не настроен. Проверьте переменные окружения.')
-      setLoading(false)
-      return
-    }
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
       const { data: profile, error } = await supabase
