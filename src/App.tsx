@@ -12,26 +12,67 @@ import { AdminPage } from './components/AdminPage';
 import { ProfilePage } from './components/ProfilePage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { AuthModal } from './components/AuthModal';
-import { useAuth } from './hooks/useAuth';
-import { useProducts } from './hooks/useProducts';
-import { useFavorites } from './hooks/useFavorites';
-import { useOrders } from './hooks/useOrders';
-import { usePromoCodes } from './hooks/usePromoCodes';
-import type { CartItem } from './types';
+import type { CartItem, Product, User, Order, PromoCode } from './types';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(['1', '2']); // Demo favorites
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-  // Supabase hooks
-  const { user, loading: authLoading, signUp, signIn, signOut, updateProfile } = useAuth();
-  const { products, loading: productsLoading, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { favorites, toggleFavorite, removeFavorite } = useFavorites(user?.id || null);
-  const { orders, createOrder } = useOrders(user?.id || null);
-  const { promoCodes, addPromoCode, deletePromoCode, validatePromoCode } = usePromoCodes();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [products, setProducts] = useState<Product[]>([
+    // Existing products from CatalogPage
+    {
+      id: '1',
+      name: 'Кольцо Классик',
+      description: 'Элегантное серебро с полированной поверхностью',
+      price: 8500,
+      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '2',
+      name: 'Кольцо Минимал',
+      description: 'Тонкое серебряное кольцо простой формы',
+      price: 6800,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '9',
+      name: 'Кольцо Эрозии',
+      description: 'Серебро с выветренной текстурой камня',
+      price: 10250,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    },
+    {
+      id: '10',
+      name: 'Кольцо Трещин',
+      description: 'Серебро с узором древних разломов',
+      price: 11400,
+      image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    }
+  ]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
+    {
+      id: '1',
+      code: 'SAVRA10',
+      discount: 10,
+      isActive: true,
+      createdAt: new Date(),
+      usageCount: 5,
+      maxUsage: 100
+    }
+  ]);
 
   const handleNavigate = (page: string, productId?: string) => {
     setIsTransitioning(true);
@@ -46,7 +87,7 @@ export default function App() {
     }, 200);
   };
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: Product & { quantity?: number; size?: string }) => {
     const cartItem: CartItem = {
       id: product.id,
       name: product.name,
@@ -54,7 +95,7 @@ export default function App() {
       image: product.image,
       quantity: product.quantity || 1,
       size: product.size,
-      orderType: product.orderType || 'catalog'
+      orderType: (product as any).orderType || 'catalog' // Определяем тип заказа
     };
 
     setCartItems(prev => {
@@ -90,60 +131,105 @@ export default function App() {
     setCartItems(prev => prev.filter(item => `${item.id}-${item.size}` !== id));
   };
 
-  const handleLogin = async (email: string, password: string) => {
-    try {
-      await signIn(email, password);
-      setIsAuthModalOpen(false);
-    } catch (error) {
-      console.error('Login error:', error);
-      if (error instanceof Error && error.message.includes('Supabase environment variables')) {
-        alert('❌ Supabase не настроен! Проверьте консоль для инструкций по настройке.');
-      } else {
-        alert('Ошибка входа. Проверьте email и пароль или настройки Supabase.');
-      }
+  const handleToggleFavorite = (productId: string) => {
+    setFavorites(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleRemoveFavorite = (productId: string) => {
+    setFavorites(prev => prev.filter(id => id !== productId));
+  };
+
+  const handleLogin = (email: string, password: string) => {
+    // Mock login logic
+    const mockUser: User = {
+      id: '1',
+      firstName: 'Елена',
+      lastName: 'Савра',
+      email: email,
+      phone: '+7 (999) 123-45-67',
+      isAdmin: email === 'admin@savra.com',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    // Плавный переход после авторизации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(mockUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
+  };
+
+  const handleRegister = (userData: any) => {
+    // Mock registration logic
+    const newUser: User = {
+      id: Date.now().toString(),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      phone: userData.phone,
+      isAdmin: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    // Плавный переход после регистрации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(newUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentPage('home');
+  };
+
+  const handleUpdateUser = (userData: Partial<User>) => {
+    if (currentUser) {
+      setCurrentUser(prev => prev ? { ...prev, ...userData, updatedAt: new Date() } : null);
     }
   };
 
-  const handleRegister = async (userData: any) => {
-    try {
-      await signUp(userData.email, userData.password, {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phone: userData.phone
-      });
-      setIsAuthModalOpen(false);
-      alert('Регистрация успешна! Проверьте email для подтверждения.');
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert('Ошибка регистрации. Попробуйте еще раз.');
-    }
+  const handleAddProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: Date.now().toString()
+    };
+    setProducts(prev => [...prev, newProduct]);
   };
 
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      setCurrentPage('home');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+  const handleUpdateProduct = (id: string, productData: Partial<Product>) => {
+    setProducts(prev => prev.map(product => 
+      product.id === id ? { ...product, ...productData } : product
+    ));
   };
 
-  const handleAddProduct = async (productData: any, files: { images: File[], video?: File }) => {
-    try {
-      await addProduct(productData, files);
-    } catch (error) {
-      console.error('Add product error:', error);
-      alert('Ошибка добавления товара');
-    }
+  const handleDeleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
   };
 
-  const handleAddPromoCode = async (promoData: any) => {
-    try {
-      await addPromoCode(promoData);
-    } catch (error) {
-      console.error('Add promo code error:', error);
-      alert('Ошибка создания промокода');
-    }
+  const handleAddPromoCode = (promoData: Omit<PromoCode, 'id' | 'createdAt' | 'usageCount'>) => {
+    const newPromo: PromoCode = {
+      ...promoData,
+      id: Date.now().toString(),
+      createdAt: new Date(),
+      usageCount: 0
+    };
+    setPromoCodes(prev => [...prev, newPromo]);
+  };
+
+  const handleDeletePromoCode = (id: string) => {
+    setPromoCodes(prev => prev.filter(promo => promo.id !== id));
   };
 
   const getTotalCartItems = () => {
@@ -154,15 +240,6 @@ export default function App() {
     return products.filter(product => favorites.includes(product.id));
   };
 
-  // Show loading while auth is initializing
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-silver-dim">Загрузка...</div>
-      </div>
-    );
-  }
-
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
@@ -172,7 +249,7 @@ export default function App() {
           <CatalogPage
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
             products={products}
           />
@@ -183,7 +260,7 @@ export default function App() {
             productId={selectedProductId}
             onNavigate={handleNavigate}
             onAddToCart={handleAddToCart}
-            onToggleFavorite={toggleFavorite}
+            onToggleFavorite={handleToggleFavorite}
             favorites={favorites}
             products={products}
           />
@@ -214,32 +291,32 @@ export default function App() {
           <FavoritesPage
             favorites={getFavoriteProducts()}
             onNavigate={handleNavigate}
-            onRemoveFavorite={removeFavorite}
+            onRemoveFavorite={handleRemoveFavorite}
             onAddToCart={handleAddToCart}
           />
         );
       case 'profile':
-        return user ? (
+        return currentUser ? (
           <ProfilePage
-            user={user}
+            user={currentUser}
             orders={orders}
             favoriteProducts={getFavoriteProducts()}
-            onUpdateUser={updateProfile}
+            onUpdateUser={handleUpdateUser}
             onNavigate={handleNavigate}
           />
         ) : (
           <NotFoundPage onNavigate={handleNavigate} />
         );
       case 'admin':
-        return user?.isAdmin ? (
+        return currentUser?.isAdmin ? (
           <AdminPage
             products={products}
             onAddProduct={handleAddProduct}
-            onUpdateProduct={updateProduct}
-            onDeleteProduct={deleteProduct}
+            onUpdateProduct={handleUpdateProduct}
+            onDeleteProduct={handleDeleteProduct}
             promoCodes={promoCodes}
             onAddPromoCode={handleAddPromoCode}
-            onDeletePromoCode={deletePromoCode}
+            onDeletePromoCode={handleDeletePromoCode}
           />
         ) : (
           <NotFoundPage onNavigate={handleNavigate} />
@@ -258,8 +335,8 @@ export default function App() {
         onNavigate={handleNavigate}
         cartItemCount={getTotalCartItems()}
         favoritesCount={favorites.length}
-        isLoggedIn={!!user}
-        isAdmin={!!user?.isAdmin}
+        isLoggedIn={!!currentUser}
+        isAdmin={!!currentUser?.isAdmin}
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onLogout={handleLogout}
       />

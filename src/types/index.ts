@@ -5,7 +5,6 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
-  orderType?: 'catalog' | 'constructor';
 }
 
 export interface Product {
