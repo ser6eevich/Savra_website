@@ -5,7 +5,7 @@ import { ArrowLeft, Minus, Plus, Trash2, Tag, CreditCard, Calendar } from 'lucid
 import { ImageWithFallback } from './ImageWithFallback';
 import { Separator } from './ui/separator';
 import { Notification } from './ui/notification';
-import type { CartItem } from '../types';
+import type { CartItem, PromoCode } from '../types';
 
 interface CartPageProps {
   cartItems: CartItem[];
@@ -14,6 +14,14 @@ interface CartPageProps {
   onRemoveItem: (id: string) => void;
   onClearCart: () => void;
   promoCodes: PromoCode[];
+  onCreateOrder: (orderData: {
+    items: CartItem[];
+    total: number;
+    orderType: 'catalog' | 'constructor';
+    promoCode?: string;
+    discount?: number;
+  }) => void;
+  validatePromoCode: (code: string) => Promise<PromoCode | null>;
 }
 
 // Demo cart item for display
@@ -26,10 +34,20 @@ const demoCartItem: CartItem = {
   size: '18'
 };
 
-export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem, onClearCart, promoCodes }: CartPageProps) {
+export function CartPage({ 
+  cartItems, 
+  onNavigate, 
+  onUpdateQuantity, 
+  onRemoveItem, 
+  onClearCart, 
+  promoCodes, 
+  onCreateOrder,
+  validatePromoCode 
+}: CartPageProps) {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoDiscount, setPromoDiscount] = useState(0);
+  const [appliedPromoCode, setAppliedPromoCode] = useState<string>('');
   const [showOrderNotification, setShowOrderNotification] = useState(false);
 
   // Use demo item if cart is empty for display purposes
@@ -40,14 +58,13 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
   const delivery = subtotal > 5000 ? 0 : 500;
   const total = subtotal - discount + delivery;
 
-  const handleApplyPromo = () => {
-    const validPromo = promoCodes.find(promo => 
-      promo.code.toLowerCase() === promoCode.toLowerCase() && promo.isActive
-    );
+  const handleApplyPromo = async () => {
+    const validPromo = await validatePromoCode(promoCode);
     
     if (validPromo) {
       setPromoApplied(true);
       setPromoDiscount(Math.floor(subtotal * (validPromo.discount / 100)));
+      setAppliedPromoCode(validPromo.code);
     } else {
       alert('Промокод не найден или неактивен');
     }
@@ -56,13 +73,24 @@ export function CartPage({ cartItems, onNavigate, onUpdateQuantity, onRemoveItem
   const handleRemovePromo = () => {
     setPromoApplied(false);
     setPromoDiscount(0);
+    setAppliedPromoCode('');
     setPromoCode('');
   };
 
   const handleOrderSubmit = () => {
+    const orderType = displayItems.some(item => item.orderType === 'constructor') 
+      ? 'constructor' 
+      : 'catalog';
+
+    onCreateOrder({
+      items: displayItems,
+      total,
+      orderType,
+      promoCode: promoApplied ? appliedPromoCode : undefined,
+      discount: promoApplied ? promoDiscount : undefined
+    });
+
     setShowOrderNotification(true);
-    // Здесь будет логика отправки заказа в CRM
-    // Можно различать заказы по типу: catalog или constructor
   };
 
   return (
