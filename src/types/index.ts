@@ -1,6 +1,3 @@
-import type { User as SupabaseUser, Product as SupabaseProduct, Order as SupabaseOrder } from './database'
-
-// Расширяем типы из Supabase для совместимости с существующим кодом
 export interface CartItem {
   id: string;
   name: string;
@@ -8,40 +5,44 @@ export interface CartItem {
   image: string;
   quantity: number;
   size?: string;
-  orderType?: 'catalog' | 'constructor';
 }
 
-// Адаптируем Product из Supabase
-export interface Product extends Omit<SupabaseProduct, 'image_url' | 'video_url' | 'sizes'> {
-  image: string; // Маппим image_url -> image для совместимости
-  video?: string; // Маппим video_url -> video
-  sizes?: string[]; // Уже правильный тип
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
   collection?: string;
   article?: string;
   material?: string;
   detailedDescription?: string;
+  sizes?: string[];
   type?: 'classic' | 'textured' | 'mens' | 'classic_mens' | 'textured_mens';
 }
 
-// Адаптируем User из Supabase
-export interface User extends Omit<SupabaseUser, 'name' | 'avatar_url' | 'created_at'> {
-  firstName: string; // Будем парсить из name
-  lastName: string; // Будем парсить из name
-  avatar?: string; // Маппим avatar_url -> avatar
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
   dateOfBirth?: string;
+  avatar?: string;
   isAdmin?: boolean;
-  createdAt: Date; // Конвертируем из string
+  createdAt: Date;
   updatedAt: Date;
 }
 
-// Адаптируем Order из Supabase
-export interface Order extends Omit<SupabaseOrder, 'user_id' | 'product_id' | 'created_at'> {
-  userId: string; // Маппим user_id -> userId
-  productId: string; // Маппим product_id -> productId
-  items: CartItem[]; // Дополнительное поле для корзины
-  total: number; // Дополнительное поле
-  orderType: 'catalog' | 'constructor';
-  createdAt: Date; // Конвертируем из string
+export interface Order {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  total: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  orderType: 'catalog' | 'constructor'; // Различие для CRM
+  createdAt: Date;
   updatedAt: Date;
   promoCode?: string;
   discount?: number;

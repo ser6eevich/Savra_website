@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { supabase } from './lib/supabase';
-import { productApi, authApi, userApi } from './lib/api';
-import { adaptSupabaseProduct, adaptSupabaseUser } from './lib/adapters';
 import { Header } from './components/Header';
 import { HomePage } from './components/HomePage';
 import { CatalogPage } from './components/CatalogPage';
@@ -25,8 +22,45 @@ export default function App() {
   const [favorites, setFavorites] = useState<string[]>(['1', '2']); // Demo favorites
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>([
+    // Existing products from CatalogPage
+    {
+      id: '1',
+      name: 'Кольцо Классик',
+      description: 'Элегантное серебро с полированной поверхностью',
+      price: 8500,
+      image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '2',
+      name: 'Кольцо Минимал',
+      description: 'Тонкое серебряное кольцо простой формы',
+      price: 6800,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'classic'
+    },
+    {
+      id: '9',
+      name: 'Кольцо Эрозии',
+      description: 'Серебро с выветренной текстурой камня',
+      price: 10250,
+      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    },
+    {
+      id: '10',
+      name: 'Кольцо Трещин',
+      description: 'Серебро с узором древних разломов',
+      price: 11400,
+      image: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop&crop=center&auto=format&q=80',
+      category: 'rings',
+      type: 'textured'
+    }
+  ]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [promoCodes, setPromoCodes] = useState<PromoCode[]>([
     {
@@ -39,64 +73,6 @@ export default function App() {
       maxUsage: 100
     }
   ]);
-
-  // Загрузка данных при инициализации
-  useEffect(() => {
-    loadInitialData();
-    setupAuthListener();
-  }, []);
-
-  const loadInitialData = async () => {
-    try {
-      setLoading(true);
-      
-      // Загружаем товары с обработкой ошибок
-      try {
-        const supabaseProducts = await productApi.getAll()
-        const adaptedProducts = supabaseProducts.map(adaptSupabaseProduct)
-        setProducts(adaptedProducts)
-      } catch (productError) {
-        console.error('Ошибка загрузки товаров:', productError)
-        // Используем демо-данные если не удалось загрузить из Supabase
-        setProducts([])
-      }
-      
-      // Проверяем текущую сессию с обработкой ошибок
-      try {
-        const session = await authApi.getCurrentSession()
-        if (session?.user) {
-          // Загружаем данные пользователя из нашей таблицы
-          try {
-            const userData = await userApi.getById(session.user.id)
-            if (userData) {
-              setCurrentUser(adaptSupabaseUser(userData))
-            }
-          } catch (userError) {
-            console.error('Ошибка загрузки данных пользователя:', userError)
-          }
-        }
-      } catch (sessionError) {
-        console.error('Ошибка проверки сессии:', sessionError)
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки данных:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const setupAuthListener = () => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        const userData = await userApi.getById(session.user.id);
-        if (userData) {
-          setCurrentUser(adaptSupabaseUser(userData));
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setCurrentUser(null);
-      }
-    });
-  };
 
   const handleNavigate = (page: string, productId?: string) => {
     setIsTransitioning(true);
@@ -168,49 +144,54 @@ export default function App() {
   };
 
   const handleLogin = (email: string, password: string) => {
-    authApi.signIn(email, password)
-      .then(() => {
-        // Пользователь будет установлен через auth listener
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 300);
-      })
-      .catch((error) => {
-        console.error('Ошибка входа:', error);
-        alert('Ошибка входа: ' + error.message);
-      });
+    // Mock login logic
+    const mockUser: User = {
+      id: '1',
+      firstName: 'Елена',
+      lastName: 'Савра',
+      email: email,
+      phone: '+7 (999) 123-45-67',
+      isAdmin: email === 'admin@savra.com',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    // Плавный переход после авторизации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(mockUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
   };
 
   const handleRegister = (userData: any) => {
-    const fullName = `${userData.firstName} ${userData.lastName}`;
+    // Mock registration logic
+    const newUser: User = {
+      id: Date.now().toString(),
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      email: userData.email,
+      phone: userData.phone,
+      isAdmin: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
     
-    authApi.signUp(userData.email, userData.password, {
-      name: fullName,
-      phone: userData.phone
-    })
-      .then(() => {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 300);
-        alert('Регистрация успешна! Проверьте email для подтверждения.');
-      })
-      .catch((error) => {
-        console.error('Ошибка регистрации:', error);
-        alert('Ошибка регистрации: ' + error.message);
-      });
+    // Плавный переход после регистрации
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentUser(newUser)
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, 100)
+    }, 200)
   };
 
   const handleLogout = () => {
-    authApi.signOut()
-      .then(() => {
-        setCurrentUser(null);
-        setCurrentPage('home');
-      })
-      .catch((error) => {
-        console.error('Ошибка выхода:', error);
-      });
+    setCurrentUser(null);
+    setCurrentPage('home');
   };
 
   const handleUpdateUser = (userData: Partial<User>) => {
@@ -219,40 +200,22 @@ export default function App() {
     }
   };
 
-  const handleAddProduct = async (product: Omit<Product, 'id'>) => {
-    try {
-      const productData = adaptProductForSupabase(product);
-      const newSupabaseProduct = await productApi.create(productData);
-      const newProduct = adaptSupabaseProduct(newSupabaseProduct);
-      setProducts(prev => [...prev, newProduct]);
-    } catch (error) {
-      console.error('Ошибка добавления товара:', error);
-      alert('Ошибка добавления товара: ' + error.message);
-    }
+  const handleAddProduct = (product: Omit<Product, 'id'>) => {
+    const newProduct: Product = {
+      ...product,
+      id: Date.now().toString()
+    };
+    setProducts(prev => [...prev, newProduct]);
   };
 
-  const handleUpdateProduct = async (id: string, productData: Partial<Product>) => {
-    try {
-      const updateData = adaptProductForSupabase(productData as any);
-      const updatedSupabaseProduct = await productApi.update(id, updateData);
-      const updatedProduct = adaptSupabaseProduct(updatedSupabaseProduct);
-      setProducts(prev => prev.map(product => 
-        product.id === id ? updatedProduct : product
-      ));
-    } catch (error) {
-      console.error('Ошибка обновления товара:', error);
-      alert('Ошибка обновления товара: ' + error.message);
-    }
+  const handleUpdateProduct = (id: string, productData: Partial<Product>) => {
+    setProducts(prev => prev.map(product => 
+      product.id === id ? { ...product, ...productData } : product
+    ));
   };
 
-  const handleDeleteProduct = async (id: string) => {
-    try {
-      await productApi.delete(id);
-      setProducts(prev => prev.filter(product => product.id !== id));
-    } catch (error) {
-      console.error('Ошибка удаления товара:', error);
-      alert('Ошибка удаления товара: ' + error.message);
-    }
+  const handleDeleteProduct = (id: string) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
   };
 
   const handleAddPromoCode = (promoData: Omit<PromoCode, 'id' | 'createdAt' | 'usageCount'>) => {
@@ -276,17 +239,6 @@ export default function App() {
   const getFavoriteProducts = () => {
     return products.filter(product => favorites.includes(product.id));
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-silver-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-silver-dim">Загрузка...</p>
-        </div>
-      </div>
-    );
-  }
 
   const renderCurrentPage = () => {
     switch (currentPage) {
