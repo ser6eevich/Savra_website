@@ -120,7 +120,10 @@ export function useAuth() {
         email: userData.email,
         password: userData.password,
         options: {
-          emailRedirectTo: undefined, // Отключаем подтверждение email для тестирования
+          emailRedirectTo: undefined,
+          data: {
+            email_confirm: false // Отключаем подтверждение email
+          },
           data: {
             first_name: userData.firstName,
             last_name: userData.lastName,
@@ -134,8 +137,12 @@ export function useAuth() {
         throw new Error(error.message)
       }
 
-      // Для тестирования сразу загружаем профиль
+      // Автоматически входим после регистрации
       if (data.user) {
+        // Если пользователь создан, но требует подтверждения, показываем сообщение
+        if (data.user && !data.session) {
+          throw new Error('Проверьте email для подтверждения регистрации')
+        }
         await loadUserProfile(data.user)
       }
 
