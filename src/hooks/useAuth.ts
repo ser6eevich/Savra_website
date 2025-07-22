@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { User as SupabaseUser } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabase'
+import { supabase, isSupabaseReady } from '../lib/supabase'
 import type { User } from '../types'
 
 export function useAuth() {
@@ -32,6 +32,12 @@ export function useAuth() {
     return () => subscription.unsubscribe()
   }, [])
 
+    
+    if (!isSupabaseReady) {
+      setError('Supabase не настроен. Проверьте переменные окружения.')
+      setLoading(false)
+      return
+    }
   const fetchUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
       const { data: profile, error } = await supabase
