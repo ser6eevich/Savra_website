@@ -75,29 +75,13 @@ export function useAuth() {
         data: {
           first_name: userData.firstName,
           last_name: userData.lastName,
+          email: email,
           phone: userData.phone
         }
       }
     })
 
     if (error) throw error
-
-    // Create profile
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          email: email,
-          phone: userData.phone || null,
-          is_admin: false
-        })
-
-      if (profileError) throw profileError
-    }
-
     return data
   }
 
