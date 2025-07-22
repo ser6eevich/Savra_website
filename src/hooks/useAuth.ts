@@ -9,34 +9,46 @@ export function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    // Получаем текущую сессию
-    const getSession = async () => {
+    // Быстрая инициализация без ожидания Supabase
+    const initAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
+        // Проверяем сессию с таймаутом
+        const sessionPromise = supabase.auth.getSession()
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout')), 2000)
+        )
+        
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]) as any
+        
         if (session?.user) {
           await loadUserProfile(session.user)
         }
       } catch (error) {
-        console.error('Error getting session:', error)
+        console.warn('Auth initialization timeout or error:', error)
+        // Продолжаем без аутентификации
       } finally {
         setLoading(false)
       }
     }
 
-    getSession()
+    initAuth()
 
-    // Слушаем изменения аутентификации
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        await loadUserProfile(session.user)
-      } else {
-        setUser(null)
-        setIsLoggedIn(false)
-      }
+    // Слушаем изменения аутентификации (без блокировки загрузки)
+    try {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          await loadUserProfile(session.user)
+        } else {
+          setUser(null)
+          setIsLoggedIn(false)
+        }
+      })
+
+      return () => subscription.unsubscribe()
+    } catch (error) {
+      console.warn('Auth state change listener error:', error)
       setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
+    }
   }, [])
 
   const loadUserProfile = async (supabaseUser: SupabaseUser) => {
