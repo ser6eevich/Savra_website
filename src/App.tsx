@@ -96,7 +96,11 @@ export default function App() {
       setIsAuthModalOpen(false);
     } catch (error) {
       console.error('Login error:', error);
-      alert('Ошибка входа. Проверьте email и пароль.');
+      if (error instanceof Error && error.message.includes('Supabase environment variables')) {
+        alert('❌ Supabase не настроен! Проверьте консоль для инструкций по настройке.');
+      } else {
+        alert('Ошибка входа. Проверьте email и пароль или настройки Supabase.');
+      }
     }
   };
 

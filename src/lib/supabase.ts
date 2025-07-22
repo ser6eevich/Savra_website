@@ -4,8 +4,16 @@ import type { Database } from '../types/database'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+if (!supabaseUrl || !supabaseAnonKey || 
+    supabaseUrl.includes('your-project-ref') || 
+    supabaseAnonKey.includes('your_actual_anon_key_here')) {
+  console.error('❌ Supabase not configured properly!')
+  console.error('Please update your .env.local file with real Supabase credentials:')
+  console.error('1. Go to your Supabase project dashboard')
+  console.error('2. Navigate to Settings → API')
+  console.error('3. Copy Project URL and anon key')
+  console.error('4. Update VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local')
+  throw new Error('Supabase environment variables not configured. Check console for instructions.')
 }
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
