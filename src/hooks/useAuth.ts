@@ -122,9 +122,6 @@ export function useAuth() {
         options: {
           emailRedirectTo: undefined,
           data: {
-            email_confirm: false // Отключаем подтверждение email
-          },
-          data: {
             first_name: userData.firstName,
             last_name: userData.lastName,
             phone: userData.phone,
